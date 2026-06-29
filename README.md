@@ -1,2 +1,3 @@
-# skills
-My LLM skills.
+# Skills
+
+These are the LLM skills that I use.
