@@ -6,6 +6,7 @@ These are the LLM skills that I use.
 
 - [annotate-plan](skills/annotate-plan/SKILL.md) - Render plans as an annotatable local HTML page with paste-back prompts.
 - [run-ai-clis](skills/run-ai-clis/SKILL.md) - Teach agent to call Codex, OpenCode, and Claude Code so the LLM doesn't resort to guessing or wasting time figuring it out.
+- [ai-validate-changes](skills/ai-validate-changes/SKILL.md) - AI-assisted validation for current code changes: intent, review, focused evidence checks, safe fixes, and a structured report.
 
 ## Community Skills
 
