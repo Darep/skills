@@ -4,6 +4,7 @@ These are the LLM skills that I use.
 
 ## My Skills
 
+- [annotate-plan](skills/annotate-plan/SKILL.md) - Render Codex plans as browser-openable HTML with annotation capture and paste-back prompts.
 - [run-ai-clis](skills/run-ai-clis/SKILL.md) - Teach agent to call Codex, OpenCode, and Claude Code so the LLM doesn't resort to guessing or wasting time figuring it out.
 
 ## Community Skills
