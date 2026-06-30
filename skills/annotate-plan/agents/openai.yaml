@@ -1,4 +1,0 @@
-interface:
-  display_name: "Annotate Plan"
-  short_description: "Review plans in annotatable HTML"
-  default_prompt: "Use $annotate-plan to create an annotatable HTML version of this plan."
