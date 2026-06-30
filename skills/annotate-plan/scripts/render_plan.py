@@ -123,15 +123,11 @@ def build_html(markdown, title):
         block_payload.append({"id": block_id, "preview": preview})
         rendered_blocks.append(
             f"""
-            <section class="plan-block" id="{block_id}" data-block-id="{block_id}">
-              <div class="block-tools">
-                <span class="block-id">{block_id}</span>
-                <button type="button" data-annotate="{block_id}">Annotate</button>
-                <span class="mark" aria-label="Annotated">annotated</span>
-              </div>
-              <div class="block-content">{render_block(block)}</div>
-              <textarea class="annotation" data-note="{block_id}" placeholder="Annotation for this block"></textarea>
-            </section>
+            <div class="annotatable" id="{block_id}" data-block-id="{block_id}">
+              <button class="add-note" type="button" data-annotate="{block_id}" aria-label="Annotate this block">+</button>
+              <span class="note-mark" aria-label="Annotated">note</span>
+              {render_block(block)}
+            </div>
             """
         )
 
@@ -152,14 +148,14 @@ def build_html(markdown, title):
 <style>
 :root {{
   color-scheme: light;
-  --bg: #f7f7f4;
+  --bg: #f3f4f0;
   --panel: #ffffff;
   --ink: #1f2933;
   --muted: #667085;
   --line: #d6d8dc;
   --accent: #0f766e;
   --accent-ink: #ffffff;
-  --note: #fff7d6;
+  --note: #fff8d8;
 }}
 * {{ box-sizing: border-box; }}
 body {{
@@ -177,39 +173,67 @@ h1 {{ margin: 0; font-size: 24px; }}
 main {{
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 18px;
-  padding: 18px;
-  max-width: 1320px;
+  gap: 22px;
+  padding: 22px;
+  max-width: 1260px;
   margin: 0 auto;
 }}
 .plan, .side {{
   min-width: 0;
 }}
-.plan-block {{
-  position: relative;
-  margin-bottom: 12px;
-  padding: 14px;
+.document {{
+  padding: 34px clamp(22px, 4vw, 54px);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--panel);
+  box-shadow: 0 18px 50px rgba(31, 41, 51, 0.08);
 }}
-.plan-block.has-note {{
-  border-color: #d7a900;
+.annotatable {{
+  position: relative;
+  margin: 0 0 18px;
+  padding: 2px 34px 2px 0;
+  border-radius: 6px;
+}}
+.annotatable:hover,
+.annotatable.selected {{
+  background: #f7fbfa;
+}}
+.annotatable.has-note {{
   background: var(--note);
 }}
-.block-tools {{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  color: var(--muted);
+.add-note {{
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  font: 700 17px/1 system-ui, sans-serif;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 120ms ease, transform 120ms ease;
+}}
+.annotatable:hover .add-note,
+.annotatable.selected .add-note,
+.add-note:focus {{
+  opacity: 1;
+  transform: scale(1);
+}}
+.note-mark {{
+  position: absolute;
+  top: 7px;
+  right: 34px;
+  display: none;
+  color: #8a5a00;
   font-size: 12px;
+  font-weight: 700;
 }}
-.block-id {{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}}
-.mark {{ display: none; color: #8a5a00; }}
-.has-note .mark {{ display: inline; }}
+.has-note .note-mark {{ display: inline; }}
 button {{
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -225,8 +249,19 @@ button.primary {{
   color: var(--accent-ink);
 }}
 button:hover {{ filter: brightness(0.97); }}
-.block-content > :first-child {{ margin-top: 0; }}
-.block-content > :last-child {{ margin-bottom: 0; }}
+.annotatable > :first-child:not(button):not(.note-mark) {{ margin-top: 0; }}
+.annotatable > :last-child {{ margin-bottom: 0; }}
+.document h2,
+.document h3,
+.document h4,
+.document h5,
+.document h6 {{
+  color: #15202b;
+  line-height: 1.2;
+}}
+.document h2 {{ font-size: 28px; }}
+.document h3 {{ font-size: 21px; margin-top: 24px; }}
+.document p, .document li {{ color: #2f3a45; }}
 pre {{
   margin: 0;
   padding: 12px;
@@ -239,7 +274,7 @@ code {{
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 13px;
 }}
-.annotation, #global-notes, #prompt-output {{
+#annotation-editor, #global-notes, #prompt-output {{
   width: 100%;
   min-height: 74px;
   resize: vertical;
@@ -247,9 +282,6 @@ code {{
   border-radius: 6px;
   padding: 9px;
   font: inherit;
-}}
-.annotation {{
-  margin-top: 10px;
 }}
 .side {{
   position: sticky;
@@ -268,6 +300,15 @@ code {{
   display: block;
   margin: 12px 0 6px;
   font-weight: 600;
+}}
+.selected-preview {{
+  min-height: 42px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f8faf9;
+  color: var(--muted);
+  font-size: 13px;
 }}
 .actions {{
   display: flex;
@@ -289,6 +330,9 @@ code {{
   main {{ grid-template-columns: 1fr; }}
   .side {{ position: static; }}
 }}
+@media (hover: none) {{
+  .add-note {{ opacity: 1; transform: scale(1); }}
+}}
 </style>
 </head>
 <body>
@@ -297,10 +341,15 @@ code {{
 </header>
 <main>
   <div class="plan">
+    <article class="document">
     {''.join(rendered_blocks)}
+    </article>
   </div>
   <aside class="side">
     <h2>Annotations</h2>
+    <label for="annotation-editor">Selected block</label>
+    <div class="selected-preview" id="selected-preview">Hover a plan element and press + to annotate it.</div>
+    <textarea id="annotation-editor" placeholder="Annotation for the selected block" disabled></textarea>
     <label for="global-notes">Overall notes</label>
     <textarea id="global-notes" placeholder="Notes about the whole plan"></textarea>
     <div class="actions">
@@ -318,8 +367,11 @@ code {{
 const storageKey = "annotate-plan:{plan_hash}";
 const blocks = JSON.parse(document.getElementById("block-data").textContent);
 const globalNotes = document.getElementById("global-notes");
+const annotationEditor = document.getElementById("annotation-editor");
+const selectedPreview = document.getElementById("selected-preview");
 const promptOutput = document.getElementById("prompt-output");
 const statusEl = document.getElementById("status");
+let selectedBlockId = null;
 
 function loadState() {{
   try {{
@@ -345,14 +397,12 @@ function setStatus(message) {{
   }}
 }}
 
-function noteFor(blockId) {{
-  return document.querySelector(`[data-note="${{blockId}}"]`);
-}}
-
 function updateMarkers() {{
   for (const block of blocks) {{
     const value = (state.notes[block.id] || "").trim();
-    document.getElementById(block.id).classList.toggle("has-note", Boolean(value));
+    const element = document.getElementById(block.id);
+    element.classList.toggle("has-note", Boolean(value));
+    element.classList.toggle("selected", block.id === selectedBlockId);
   }}
 }}
 
@@ -383,27 +433,32 @@ function refreshPrompt() {{
   promptOutput.value = buildPrompt();
 }}
 
+function selectBlock(blockId) {{
+  const block = blocks.find((item) => item.id === blockId);
+  selectedBlockId = blockId;
+  selectedPreview.textContent = block ? block.preview : blockId;
+  annotationEditor.disabled = false;
+  annotationEditor.value = state.notes[blockId] || "";
+  annotationEditor.focus();
+  updateMarkers();
+}}
+
 globalNotes.value = state.global || "";
 globalNotes.addEventListener("input", () => {{
   state.global = globalNotes.value;
   saveState();
 }});
 
-for (const block of blocks) {{
-  const textarea = noteFor(block.id);
-  textarea.value = state.notes[block.id] || "";
-  textarea.addEventListener("input", () => {{
-    state.notes[block.id] = textarea.value;
-    saveState();
-  }});
-}}
+annotationEditor.addEventListener("input", () => {{
+  if (!selectedBlockId) return;
+  state.notes[selectedBlockId] = annotationEditor.value;
+  saveState();
+}});
 
 document.addEventListener("click", (event) => {{
   const button = event.target.closest("[data-annotate]");
   if (!button) return;
-  const textarea = noteFor(button.dataset.annotate);
-  textarea.focus();
-  textarea.scrollIntoView({{ block: "center", behavior: "smooth" }});
+  selectBlock(button.dataset.annotate);
 }});
 
 document.getElementById("copy-prompt").addEventListener("click", async () => {{
@@ -435,7 +490,10 @@ document.getElementById("clear-notes").addEventListener("click", () => {{
   state = {{ global: "", notes: {{}} }};
   localStorage.removeItem(storageKey);
   globalNotes.value = "";
-  for (const block of blocks) noteFor(block.id).value = "";
+  annotationEditor.value = "";
+  selectedBlockId = null;
+  annotationEditor.disabled = true;
+  selectedPreview.textContent = "Hover a plan element and press + to annotate it.";
   refreshPrompt();
   setStatus("Annotations cleared.");
 }});

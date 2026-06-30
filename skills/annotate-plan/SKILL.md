@@ -36,6 +36,8 @@ http://127.0.0.1:8765/plan.html
 
 Tell the user annotations are stored only in their browser and the page's
 `Copy Prompt` button creates the prompt to paste back into Codex.
+The plan is shown as one document; hover a plan element and click `+` to
+annotate it in the side panel.
 
 ## Notes
 
