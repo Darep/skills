@@ -30,12 +30,14 @@ project's git proxy, push gate, daemon, PR automation, or CI watcher.
 - Validate through a fixed sequence: infer intent, review, test/evidence,
   documentation, lint, and a bounded fix loop.
 - Represent agent review output as structured findings with severity, file,
-  line, description, and an action such as `auto-fix`, `ask-user`, or `no-op`.
+  line, description, an action such as `auto-fix`, `ask-user`, or `no-op`, and
+  a review-level `risk_level` plus `risk_rationale`.
 - Allow automatic fixes only for findings that are clearly local and marked
   safe to fix. User-judgment findings block instead of being silently changed.
 - Treat tests as evidence. A configured test command is valuable, but an agent
   may also inspect the diff, intent, artifacts, and command output to determine
-  whether the change is sufficiently validated.
+  whether the change is sufficiently validated. Preserve that in `tested`,
+  `testing_summary`, and `artifacts` instead of a separate verification field.
 - Treat agent steering as advisory. Prompting an agent to stay in a scope is
   not a hard sandbox, so this skill keeps external AI CLIs read-only and lets
   the current Codex session apply any approved safe fixes.
