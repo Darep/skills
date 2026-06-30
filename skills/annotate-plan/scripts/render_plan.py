@@ -2,9 +2,12 @@
 import argparse
 import hashlib
 import html
+import http.server
 import json
 import re
 import sys
+import tempfile
+from functools import partial
 from pathlib import Path
 
 
@@ -111,8 +114,17 @@ def preview_for(block):
     return text[:120] or "Untitled block"
 
 
-def build_html(markdown, title):
+def infer_title(markdown):
+    for line in markdown.splitlines():
+        match = HEADING_RE.match(line)
+        if match:
+            return match.group(2)
+    return "Plan Review"
+
+
+def build_html(markdown):
     blocks = split_blocks(markdown)
+    title = infer_title(markdown)
     plan_hash = hashlib.sha256(markdown.encode("utf-8")).hexdigest()[:16]
     block_payload = []
     rendered_blocks = []
@@ -508,15 +520,49 @@ refreshPrompt();
 def parse_args():
     parser = argparse.ArgumentParser(description="Render a plan as annotatable static HTML.")
     parser.add_argument("--input", required=True, help="Markdown plan file to render")
-    parser.add_argument("--output", required=True, help="HTML output path")
-    parser.add_argument("--title", default="Plan Review", help="HTML page title")
-    return parser.parse_args()
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--output", help="HTML output path")
+    target.add_argument("--serve", action="store_true", help="Render and serve a temporary HTML page")
+    parser.add_argument("--port", type=int, help="Port for --serve")
+    args = parser.parse_args()
+    if args.port is not None and not args.serve:
+        parser.error("--port requires --serve")
+    if args.port is None:
+        args.port = 8765
+    return args
+
+
+def write_html(markdown, output_path):
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(build_html(markdown), encoding="utf-8")
+
+
+def serve(markdown, port):
+    with tempfile.TemporaryDirectory(prefix="annotate-plan-") as directory:
+        output_path = Path(directory) / "plan.html"
+        write_html(markdown, output_path)
+        handler = partial(http.server.SimpleHTTPRequestHandler, directory=directory)
+        try:
+            server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+        except OSError as exc:
+            print(f"error: could not serve on port {port}: {exc}", file=sys.stderr)
+            return 1
+
+        url = f"http://127.0.0.1:{port}/plan.html"
+        print(url, flush=True)
+        print("Press Ctrl-C to stop.", file=sys.stderr)
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            print("\nStopped.", file=sys.stderr)
+        finally:
+            server.server_close()
+    return 0
 
 
 def main():
     args = parse_args()
     input_path = Path(args.input)
-    output_path = Path(args.output)
 
     try:
         markdown = input_path.read_text(encoding="utf-8")
@@ -524,9 +570,12 @@ def main():
         print(f"error: could not read {input_path}: {exc}", file=sys.stderr)
         return 1
 
+    if args.serve:
+        return serve(markdown, args.port)
+
+    output_path = Path(args.output)
     try:
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(build_html(markdown, args.title), encoding="utf-8")
+        write_html(markdown, output_path)
     except OSError as exc:
         print(f"error: could not write {output_path}: {exc}", file=sys.stderr)
         return 1

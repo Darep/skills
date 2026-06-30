@@ -5,30 +5,24 @@ description: Create annotatable HTML review pages for Codex plans. Use when the 
 
 # Annotate Plan
 
-Create the plan normally in chat, then render the same Markdown into a local
-HTML review page.
+Create the plan normally in chat, then serve the same Markdown as a local HTML
+review page.
 
 ## Workflow
 
 1. Write the plan in Markdown in the chat response.
 2. Save the same Markdown to a `.md` file in a temporary or user-requested
-   output directory.
-3. Render it:
+   location.
+3. Serve it:
 
 ```bash
 python3 <skill-dir>/scripts/render_plan.py \
   --input <plan.md> \
-  --output <output-dir>/plan.html \
-  --title "Plan Review"
+  --serve \
+  --port 8765
 ```
 
-4. Serve the output directory:
-
-```bash
-python3 -m http.server 8765 --directory <output-dir>
-```
-
-5. Return the localhost URL:
+4. Return the printed localhost URL:
 
 ```text
 http://127.0.0.1:8765/plan.html
@@ -45,3 +39,5 @@ annotate it in the side panel.
 - Keep the HTML static; do not add a custom POST server.
 - Do not add Markdown dependencies. The renderer intentionally supports only
   simple headings, paragraphs, lists, and fenced code blocks.
+- Use `--output <plan.html>` instead of `--serve` only when the user asks for a
+  standalone HTML file. `--output` and `--serve` are mutually exclusive.
