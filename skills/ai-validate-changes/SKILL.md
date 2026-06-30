@@ -63,7 +63,7 @@ Use external agents only for review, not mutation.
 - Prefer passing a captured diff and relevant command output to the external
   agent. If a CLI cannot be constrained to read-only behavior, skip it.
 - Give the external agent the same scope and ask for structured findings with
-  severity, file, line, evidence, and suggested action.
+  severity, file, line, description, and suggested action.
 - If no external CLI is installed or it fails quickly, continue with the
   primary pass and note the absence in the report.
 
@@ -96,6 +96,8 @@ scope:
   files:
 intent:
 external_agent:
+risk_level:
+risk_rationale:
 findings:
   - id:
     source:
@@ -105,23 +107,35 @@ findings:
     file:
     line:
     description:
-    evidence:
     status:
+tested:
+  - command_or_check:
+testing_summary:
+artifacts:
+  - kind:
+    label:
+    path:
+    url:
+    content:
 fixes:
   - finding_ids:
     summary:
     files:
-    verification:
 remaining_decisions:
   - finding_id:
     question:
-verification:
-  commands:
-  skipped:
+skipped:
+  - check:
+    reason:
 ```
 
 For small validations, prose is fine, but still include scope, external-agent
-status, fixes applied, verification, and remaining decisions.
+status, risk, fixes applied, tested checks, testing summary, artifacts, and
+remaining decisions.
+
+Do not add separate `evidence` or `verification` fields to the report. Put proof
+of behavior in `tested`, `testing_summary`, and `artifacts`; put rationale for a
+finding in its `description` and `status`.
 
 Do not create persistent report files unless the user asks. If a report file is
 requested, overwrite the same named file on repeat runs instead of appending.
