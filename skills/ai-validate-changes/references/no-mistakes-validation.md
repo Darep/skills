@@ -10,6 +10,16 @@ project's git proxy, push gate, daemon, PR automation, or CI watcher.
   <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/README.md#L33-L61>
 - Pipeline step order:
   <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/pipeline/steps/common.go#L124-L140>
+- Intent step:
+  <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/pipeline/steps/intent.go>
+- Default transcript readers:
+  <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/intent/readers.go>
+- Claude transcript reader:
+  <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/intent/reader_claude.go>
+- Codex transcript reader:
+  <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/intent/reader_codex.go>
+- Transcript summarizer:
+  <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/intent/summarizer.go>
 - Approval and fix loop:
   <https://github.com/kunchenguid/no-mistakes/blob/2a73434e762de372e3f13712e0433b773ceec6c3/internal/pipeline/executor.go#L313-L450>
 - Config trust behavior:
@@ -29,6 +39,13 @@ project's git proxy, push gate, daemon, PR automation, or CI watcher.
 
 - Validate through a fixed sequence: infer intent, review, test/evidence,
   documentation, lint, and a bounded fix loop.
+- Prefer explicit intent when the driving agent supplies it. Otherwise,
+  best-effort infer intent from recent local agent transcripts by matching cwd,
+  changed files, and recency, then summarize the user's goal and constraints.
+- Read transcript stores directly for intent matching. For Claude, use local
+  JSONL records under `~/.claude/projects`; for Codex, use read-only
+  `~/.codex/state_*.sqlite` metadata plus rollout JSONL files. Do not reattach
+  to sessions through an interactive CLI.
 - Represent agent review output as structured findings with severity, file,
   line, description, an action such as `auto-fix`, `ask-user`, or `no-op`, and
   a review-level `risk_level` plus `risk_rationale`.
@@ -51,5 +68,7 @@ project's git proxy, push gate, daemon, PR automation, or CI watcher.
 - Push interception or branch protection.
 - PR creation, PR updates, and CI monitoring.
 - Daemons, background services, persistent state, or hooks.
+- A transcript cache, disambiguation packet writer, or dedicated transcript
+  parser implementation.
 - Generated scripts for this repo. The skill is procedural so repeat runs
   update the same validation surface instead of creating new support files.
