@@ -19,7 +19,6 @@ Prefer `codex exec` when calling Codex from another agent such as Claude Code.
 If user mentions "ultracode" it means `xhigh` effort and asking Opus to use
 dynamic workflows.
 
-
 ## Shorthand Map
 
 - Codex CLI
@@ -31,12 +30,12 @@ dynamic workflows.
   - machine-readable stream -> `--json`
   - save final answer -> `--output-last-message <file>`
 - OpenCode
-  - `kimi k2.6` -> `opencode/kimi-k2.6`
-  - `opus 4.8` -> `opencode/claude-opus-4-8`
+  - `kimi k3` -> `opencode/kimi-k3`
+  - `opus 5` -> `opencode/claude-opus-5`
   - `opus effort` -> `--variant [xhigh|max]`
   - Always use thinking with opus -> `--thinking`
 - Claude Code CLI
-  - `opus 4.8` -> `claude-opus-4-8`
+  - `opus 5` -> `claude-opus-5`
   - plain `opus` can stay `opus` if the user did not pin a version
   - if user mentions `ultracode`, preserve the literal word
     `ultracode` in the prompt when practical; Claude uses it as a
@@ -105,22 +104,20 @@ codex
 Non-interactive:
 
 ```bash
-opencode run -m opencode/kimi-k2.6 "<prompt>"
+opencode run -m opencode/kimi-k3 "<prompt>"
 ```
 
 Non-interactive with "thinking xhigh effort":
 
 ```bash
-opencode run -m opencode/claude-opus-4-8 --variant xhigh --thinking "<prompt>"
+opencode run -m opencode/claude-opus-5 --variant xhigh --thinking "<prompt>"
 ```
-
 
 Interactive:
 
 ```bash
-opencode -m opencode/kimi-k2.6
+opencode -m opencode/kimi-k3
 ```
-
 
 If the user explicitly asks for OpenCode reasoning effort, the flag is:
 
@@ -139,19 +136,19 @@ If the user explicitly asks to see reasoning blocks, add:
 Non-interactive:
 
 ```bash
-claude -p --model claude-opus-4-8 --effort xhigh "<prompt>"
+claude -p --model claude-opus-5 --effort xhigh "<prompt>"
 ```
 
 JSON output:
 
 ```bash
-claude -p --output-format json --model claude-opus-4-8 --effort xhigh "<prompt>"
+claude -p --output-format json --model claude-opus-5 --effort xhigh "<prompt>"
 ```
 
 Interactive:
 
 ```bash
-claude --model claude-opus-4-8 --effort xhigh
+claude --model claude-opus-5 --effort xhigh
 ```
 
 ## Execution Rules
