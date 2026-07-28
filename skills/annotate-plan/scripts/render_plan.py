@@ -4,7 +4,9 @@ import hashlib
 import html
 import http.server
 import json
+import os
 import re
+import socket
 import sys
 import tempfile
 from functools import partial
@@ -791,11 +793,20 @@ def parse_args():
     target.add_argument("--output", help="HTML output path")
     target.add_argument("--serve", action="store_true", help="Render and serve a temporary HTML page")
     parser.add_argument("--port", type=int, help="Port for --serve")
+    parser.add_argument(
+        "--host",
+        help="Bind address for --serve (default: $ANNOTATE_PLAN_HOST or 127.0.0.1). "
+        "Use 0.0.0.0 to reach the page from other machines.",
+    )
     args = parser.parse_args()
     if args.port is not None and not args.serve:
         parser.error("--port requires --serve")
+    if args.host is not None and not args.serve:
+        parser.error("--host requires --serve")
     if args.port is None:
         args.port = 8765
+    if args.host is None:
+        args.host = os.environ.get("ANNOTATE_PLAN_HOST") or "127.0.0.1"
     return args
 
 
@@ -804,18 +815,31 @@ def write_html(markdown, output_path):
     output_path.write_text(build_html(markdown), encoding="utf-8")
 
 
-def serve(markdown, port):
+def reachable_host(host):
+    """Turn a wildcard bind address into an address someone can actually open."""
+    if host not in ("0.0.0.0", "::", ""):
+        return host
+    # ponytail: UDP connect sends nothing, it just picks the outbound interface.
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+        try:
+            probe.connect(("8.8.8.8", 80))
+            return probe.getsockname()[0]
+        except OSError:
+            return "127.0.0.1"
+
+
+def serve(markdown, port, host):
     with tempfile.TemporaryDirectory(prefix="annotate-plan-") as directory:
         output_path = Path(directory) / "plan.html"
         write_html(markdown, output_path)
         handler = partial(http.server.SimpleHTTPRequestHandler, directory=directory)
         try:
-            server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+            server = http.server.ThreadingHTTPServer((host, port), handler)
         except OSError as exc:
-            print(f"error: could not serve on port {port}: {exc}", file=sys.stderr)
+            print(f"error: could not serve on {host}:{port}: {exc}", file=sys.stderr)
             return 1
 
-        url = f"http://127.0.0.1:{port}/plan.html"
+        url = f"http://{reachable_host(host)}:{port}/plan.html"
         print(url, flush=True)
         print("Press Ctrl-C to stop.", file=sys.stderr)
         try:
@@ -838,7 +862,7 @@ def main():
         return 1
 
     if args.serve:
-        return serve(markdown, args.port)
+        return serve(markdown, args.port, args.host)
 
     output_path = Path(args.output)
     try:

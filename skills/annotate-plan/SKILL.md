@@ -34,5 +34,9 @@ annotate it in the side panel.
 ## Notes
 
 - Use another port if `8765` is busy.
+- The page is served on `127.0.0.1` unless `ANNOTATE_PLAN_HOST` says otherwise, so
+  just run the command above and report the URL it prints -- it is already correct
+  for the machine you are on. Pass `--host 0.0.0.0` only if the user asks to reach
+  the page from another machine and the env var is not set.
 - Use `--output <plan.html>` instead of `--serve` only when the user asks for a standalone HTML file. `--output` and `--serve` are mutually exclusive.
 - The page title comes from the first heading in the Markdown.
