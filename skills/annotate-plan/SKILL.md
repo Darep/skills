@@ -5,38 +5,50 @@ description: Create HTML review pages for plans. Use when the user requests a HT
 
 # Annotate Plan
 
-Write the plan as Markdown, then serve it as a local HTML review page.
+Write the plan as HTML into a template, then serve it as a local review page
+where the user can annotate each section.
 
 ## Workflow
 
-1. Write the plan in Markdown to a `.md` file in a temporary or user-requested
-   location. Showing the plan in the chat response too is optional.
-2. Serve it:
+1. Copy the template to a scratch directory:
 
 ```bash
-python3 <skill-dir>/scripts/render_plan.py \
-  --input <plan.md> \
-  --serve \
-  --port 8765
+mkdir -p /tmp/plan-review && cp <skill-dir>/template.html /tmp/plan-review/plan.html
 ```
 
-3. Return the printed localhost URL:
+2. Edit `/tmp/plan-review/plan.html`:
+   - Replace `Plan Review` in both `<title>` and `<h1>` with the plan's title.
+   - Write the plan as plain HTML inside `<article class="document" id="plan">`,
+     replacing the placeholder comment.
+
+   Use ordinary semantic tags -- `<h2>`, `<h3>`, `<p>`, `<ul>`, `<ol>`, `<table>`,
+   `<pre><code>`, `<strong>`, `<code>`. Do not add classes, ids, or buttons; the
+   page wraps each top-level element into an annotatable block on load.
+
+3. Serve the directory:
+
+```bash
+python3 -m http.server 8765 --directory /tmp/plan-review
+```
+
+4. Return the URL, using a hostname the user can actually reach:
 
 ```text
-http://127.0.0.1:8765/plan.html
+http://<host>:8765/plan.html
 ```
 
 Tell the user annotations are stored only in their browser and the page's
-`Copy Prompt` button creates the prompt to paste back into Codex.
-The plan is shown as one document; hover a plan element and click `+` to
-annotate it in the side panel.
+`Copy prompt` button creates the prompt to paste back.
 
 ## Notes
 
-- Use another port if `8765` is busy.
-- The page is served on `127.0.0.1` unless `ANNOTATE_PLAN_HOST` says otherwise, so
-  just run the command above and report the URL it prints -- it is already correct
-  for the machine you are on. Pass `--host 0.0.0.0` only if the user asks to reach
-  the page from another machine and the env var is not set.
-- Use `--output <plan.html>` instead of `--serve` only when the user asks for a standalone HTML file. `--output` and `--serve` are mutually exclusive.
-- The page title comes from the first heading in the Markdown.
+- Each top-level element inside `#plan` is one annotatable block. Add
+  `data-split` to a `<ul>` or `<ol>` when its items deserve separate
+  annotations, and each `<li>` becomes its own block instead.
+- Run the server in the background so it does not block, and use another port if
+  `8765` is busy.
+- `python3 -m http.server` listens on all interfaces, so the page is reachable
+  from other machines on the network. Add `--bind 127.0.0.1` to keep it local.
+- Serve a directory holding only the plan; everything in it is exposed.
+- For a standalone file the user can open or send, just hand them the edited
+  `plan.html` -- it needs no server.
