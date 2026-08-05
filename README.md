@@ -9,6 +9,7 @@ These are the LLM skills that I use.
 
 ## Community Skills
 
+- [i-have-adhd](skills/i-have-adhd/SKILL.md) - Shape responses for ADHD-friendly reading with clear actions, numbered steps, and fewer tangents.
 - [ponytail](skills/ponytail/SKILL.md) - Minimalist mode for shipping the simplest solution that actually works.
 - [ponytail-audit](skills/ponytail-audit/SKILL.md) - Whole-repo audit for over-engineering and removable complexity.
 - [ponytail-debt](skills/ponytail-debt/SKILL.md) - Ledger of `ponytail:` comments and deliberate shortcuts.
