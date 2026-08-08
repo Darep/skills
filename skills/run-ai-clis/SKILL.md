@@ -14,6 +14,10 @@ Use these mappings directly. Do not spend time rediscovering flags unless the
 user asks for a different model or the command fails.
 
 Prefer `claude` if available, over opencode, for Claude models such as Opus.
+If the `claude` CLI is unavailable, run the equivalent Claude model through
+OpenCode instead. Preserve the prompt and map the model and effort settings;
+for example, fall back from `claude-opus-5 --effort xhigh` to
+`opencode/claude-opus-5 --variant xhigh --thinking`.
 Prefer `codex exec` when calling Codex from another agent such as Claude Code.
 
 If user mentions "ultracode" it means `xhigh` effort and asking Opus to use
@@ -157,6 +161,9 @@ claude --model claude-opus-5 --effort xhigh
   clearly.
 - Prefer non-interactive commands (`codex exec`, `opencode run`, `claude -p`)
   unless the user explicitly wants an interactive session.
+- If the `claude` CLI is unavailable, fall back to `opencode run` with the
+  corresponding `opencode/claude-*` model. Map Claude `--effort` to OpenCode
+  `--variant`, add `--thinking`, and keep the prompt materially unchanged.
 - When calling Codex from Claude Code, use `codex exec`; do not launch the
   interactive TUI unless the user explicitly asks for it.
 - Keep the user prompt materially the same across tools unless the user
