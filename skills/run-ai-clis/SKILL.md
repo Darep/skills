@@ -35,6 +35,8 @@ dynamic workflows.
   - save final answer -> `--output-last-message <file>`
 - OpenCode
   - `kimi k3` -> `opencode/kimi-k3`
+  - `glm 5.2` -> `opencode/glm-5.2`
+  - `gemini 3.6 flash` -> `opencode/gemini-3.6-flash`
   - `opus 5` -> `opencode/claude-opus-5`
   - `opus effort` -> `--variant [xhigh|max]`
   - Always use thinking with opus -> `--thinking`
@@ -105,10 +107,16 @@ codex
 
 ### OpenCode
 
-Non-interactive:
+When the user does not name a model, choose the best fit for the task from
+`opencode/kimi-k3`, `opencode/glm-5.2`, and
+`opencode/gemini-3.6-flash`. Treat them as peer candidates rather than using a
+fixed default. Consider the task, expected speed and depth, and model
+availability. Honor an explicit user choice.
+
+Non-interactive with the chosen model:
 
 ```bash
-opencode run -m opencode/kimi-k3 "<prompt>"
+opencode run -m <chosen-model> "<prompt>"
 ```
 
 Non-interactive with "thinking xhigh effort":
@@ -117,10 +125,10 @@ Non-interactive with "thinking xhigh effort":
 opencode run -m opencode/claude-opus-5 --variant xhigh --thinking "<prompt>"
 ```
 
-Interactive:
+Interactive with the chosen model:
 
 ```bash
-opencode -m opencode/kimi-k3
+opencode -m <chosen-model>
 ```
 
 If the user explicitly asks for OpenCode reasoning effort, the flag is:
