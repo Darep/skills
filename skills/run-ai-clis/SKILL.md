@@ -14,10 +14,8 @@ Use these mappings directly. Do not spend time rediscovering flags unless the
 user asks for a different model or the command fails.
 
 Prefer `claude` if available, over opencode, for Claude models such as Opus.
-If the `claude` CLI is unavailable, run the equivalent Claude model through
-OpenCode instead. Preserve the prompt and map the model and effort settings;
-for example, fall back from `claude-opus-5 --effort xhigh` to
-`opencode/claude-opus-5 --variant xhigh --thinking`.
+If the `claude` CLI is unavailable, OpenCode Zen can run Claude models; OpenCode
+Go cannot. Never switch between Zen and Go silently.
 Prefer `codex exec` when calling Codex from another agent such as Claude Code.
 
 If user mentions "ultracode" it means `xhigh` effort and asking Opus to use
@@ -34,12 +32,15 @@ dynamic workflows.
   - machine-readable stream -> `--json`
   - save final answer -> `--output-last-message <file>`
 - OpenCode
-  - `kimi k3` -> `opencode/kimi-k3`
-  - `glm 5.2` -> `opencode/glm-5.2`
-  - `gemini 3.6 flash` -> `opencode/gemini-3.6-flash`
-  - `opus 5` -> `opencode/claude-opus-5`
-  - `opus effort` -> `--variant [xhigh|max]`
-  - Always use thinking with opus -> `--thinking`
+  - Zen provider prefix -> `opencode/`
+  - Go provider prefix -> `opencode-go/`
+  - `kimi k3` on Zen -> `opencode/kimi-k3`
+  - `kimi k3` on Go -> `opencode-go/kimi-k3`
+  - `opus 5` on Zen -> `opencode/claude-opus-5`
+  - `glm 5.2` -> `opencode/glm-5.2` or `opencode-go/glm-5.2`
+  - OpenCode Go has no Opus/Claude model
+  - reasoning effort -> `--variant <level>`; valid levels are model-specific
+  - show reasoning blocks -> `--thinking`
 - Claude Code CLI
   - `opus 5` -> `claude-opus-5`
   - plain `opus` can stay `opus` if the user did not pin a version
@@ -119,10 +120,11 @@ Non-interactive with the chosen model:
 opencode run -m <chosen-model> "<prompt>"
 ```
 
-Non-interactive with "thinking xhigh effort":
+Non-interactive with a selected provider and model:
 
 ```bash
-opencode run -m opencode/claude-opus-5 --variant xhigh --thinking "<prompt>"
+opencode run -m opencode-go/kimi-k3 "<prompt>"
+opencode run -m opencode/kimi-k3 "<prompt>"
 ```
 
 Interactive with the chosen model:
@@ -142,6 +144,20 @@ If the user explicitly asks to see reasoning blocks, add:
 ```bash
 --thinking
 ```
+
+OpenCode model names are `provider/model`: `opencode/...` uses Zen and
+`opencode-go/...` uses Go. If the user names one, use it. If they do not name a
+provider or model, omit `-m` rather than guessing which subscription is current.
+If a requested model fails or appears stale, discover live IDs and variants
+with:
+
+```bash
+opencode models opencode --verbose
+opencode models opencode-go --verbose
+```
+
+Do not rediscover models on every run; use this only after a model-related
+failure or when the user requests a model not mapped above.
 
 ### Claude Code CLI
 
@@ -169,9 +185,12 @@ claude --model claude-opus-5 --effort xhigh
   clearly.
 - Prefer non-interactive commands (`codex exec`, `opencode run`, `claude -p`)
   unless the user explicitly wants an interactive session.
-- If the `claude` CLI is unavailable, fall back to `opencode run` with the
-  corresponding `opencode/claude-*` model. Map Claude `--effort` to OpenCode
-  `--variant`, add `--thinking`, and keep the prompt materially unchanged.
+- Treat OpenCode Go and OpenCode Zen as separate providers. Honor the provider
+  the user names; otherwise omit `-m` and preserve OpenCode's active default.
+- Do not fall back between `opencode/...` and `opencode-go/...` without the
+  user's approval because that changes which subscription pays.
+- If the `claude` CLI is unavailable, use `opencode/claude-*` only when Zen is
+  selected. Go currently has no Claude models.
 - When calling Codex from Claude Code, use `codex exec`; do not launch the
   interactive TUI unless the user explicitly asks for it.
 - Keep the user prompt materially the same across tools unless the user
