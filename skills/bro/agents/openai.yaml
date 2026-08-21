@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bro"
+  short_description: "Make the previous answer easy to understand"
+  default_prompt: "Use $bro to re-explain your previous answer in plain language."

@@ -9,6 +9,11 @@ These are the LLM skills that I use.
 
 ## Community Skills
 
+- [bro](skills/bro/SKILL.md) - Re-explain the previous assistant message in plain language.
+- [domain-modeling](skills/domain-modeling/SKILL.md) - Build and sharpen a project's shared domain language and design decisions.
+- [grill-me](skills/grill-me/SKILL.md) - Relentlessly interview the user to sharpen a plan or design.
+- [grill-with-docs](skills/grill-with-docs/SKILL.md) - Sharpen a plan or design while creating ADRs and a glossary.
+- [grilling](skills/grilling/SKILL.md) - Reusable interview workflow used by the grilling skills.
 - [i-have-adhd](skills/i-have-adhd/SKILL.md) - Shape responses for ADHD-friendly reading with clear actions, numbered steps, and fewer tangents.
 - [ponytail](skills/ponytail/SKILL.md) - Minimalist mode for shipping the simplest solution that actually works.
 - [ponytail-audit](skills/ponytail-audit/SKILL.md) - Whole-repo audit for over-engineering and removable complexity.
