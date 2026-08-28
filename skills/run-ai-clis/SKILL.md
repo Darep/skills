@@ -37,7 +37,7 @@ dynamic workflows.
   - `kimi k3` on Zen -> `opencode/kimi-k3`
   - `kimi k3` on Go -> `opencode-go/kimi-k3`
   - `opus 5` on Zen -> `opencode/claude-opus-5`
-  - `glm 5.2` -> `opencode/glm-5.2` or `opencode-go/glm-5.2`
+  - `glm 5.3 fast` or `glm 5.3 flash` on Go -> `opencode-go/glm-5.3-flash`
   - OpenCode Go has no Opus/Claude model
   - reasoning effort -> `--variant <level>`; valid levels are model-specific
   - show reasoning blocks -> `--thinking`
@@ -109,7 +109,7 @@ codex
 ### OpenCode
 
 When the user does not name a model, choose the best fit for the task from
-`opencode/kimi-k3`, `opencode/glm-5.2`, and
+`opencode/kimi-k3`, `opencode-go/glm-5.3-flash`, and
 `opencode/gemini-3.6-flash`. Treat them as peer candidates rather than using a
 fixed default. Consider the task, expected speed and depth, and model
 availability. Honor an explicit user choice.
