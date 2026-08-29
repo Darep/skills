@@ -91,13 +91,27 @@ codex exec --output-last-message codex-result.md "<prompt>"
 Review uncommitted changes:
 
 ```bash
-codex review --uncommitted "<review instructions>"
+codex review --uncommitted
 ```
 
 Review against a base branch:
 
 ```bash
-codex review --base main "<review instructions>"
+codex review --base main
+```
+
+Custom review instructions:
+
+```bash
+codex review "<review instructions>"
+```
+
+Review target flags (`--uncommitted`, `--base`, and `--commit`) cannot be
+combined with custom review instructions. When both are needed, use
+`codex exec` and name the target in the prompt:
+
+```bash
+codex exec "Review changes against main. <review instructions>"
 ```
 
 Interactive:
