@@ -36,13 +36,13 @@ dynamic workflows.
   - Go provider prefix -> `opencode-go/`
   - `kimi k3` on Zen -> `opencode/kimi-k3`
   - `kimi k3` on Go -> `opencode-go/kimi-k3`
-  - `opus 5` on Zen -> `opencode/claude-opus-5`
+  - `opus 5.5` on Zen -> `opencode/claude-opus-5-5`
   - `glm 5.3 fast` or `glm 5.3 flash` on Go -> `opencode-go/glm-5.3-flash`
   - OpenCode Go has no Opus/Claude model
   - reasoning effort -> `--variant <level>`; valid levels are model-specific
   - show reasoning blocks -> `--thinking`
 - Claude Code CLI
-  - `opus 5` -> `claude-opus-5`
+  - `opus 5.5` -> `claude-opus-5-5`
   - plain `opus` can stay `opus` if the user did not pin a version
   - if user mentions `ultracode`, preserve the literal word
     `ultracode` in the prompt when practical; Claude uses it as a
@@ -124,7 +124,7 @@ codex
 
 When the user does not name a model, choose the best fit for the task from
 `opencode/kimi-k3`, `opencode-go/glm-5.3-flash`, and
-`opencode/gemini-3.6-flash`. Treat them as peer candidates rather than using a
+`opencode/gemini-3.8-flash`. Treat them as peer candidates rather than using a
 fixed default. Consider the task, expected speed and depth, and model
 availability. Honor an explicit user choice.
 
@@ -178,19 +178,19 @@ failure or when the user requests a model not mapped above.
 Non-interactive:
 
 ```bash
-claude -p --model claude-opus-5 --effort xhigh "<prompt>"
+claude -p --model claude-opus-5-5 --effort xhigh "<prompt>"
 ```
 
 JSON output:
 
 ```bash
-claude -p --output-format json --model claude-opus-5 --effort xhigh "<prompt>"
+claude -p --output-format json --model claude-opus-5-5 --effort xhigh "<prompt>"
 ```
 
 Interactive:
 
 ```bash
-claude --model claude-opus-5 --effort xhigh
+claude --model claude-opus-5-5 --effort xhigh
 ```
 
 ## Execution Rules
