@@ -33,7 +33,7 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message using the Task tool. Use the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`, one reviewer per entry, extending or shrinking the Reviewer A/B/C labels below to the configured entry count. If the rule or that line is missing, use the table defaults.
+Launch all reviewers concurrently. If the user names reviewer models, use one reviewer per model, extending or shrinking the Reviewer A/B/C labels below to match. Otherwise use the table defaults.
 
 | Subagent | Default model |
 |----------|---------------|
@@ -41,12 +41,9 @@ Launch all reviewers in a single message using the Task tool. Use the `interroga
 | Reviewer B | `gpt-5.6-sol-max` |
 | Reviewer C | `grok-4.7-xhigh-fast` |
 
-For each reviewer:
-- `subagent_type`: `generalPurpose`
-- `model`: the configured `interrogate reviewers` entry, or the table default with no configured line. For an `auto` or `inherit-parent` entry, omit `model` so that reviewer runs on the parent model.
-- `readonly`: `true`
+Each reviewer must run on its own model, because the signal comes from model diversity. Spawn a reviewer with the host's subagent tool when that tool can select its model. Otherwise run it through the matching local CLI with the commands and model IDs from the `run-ai-clis` skill: `claude` for Claude models, `codex exec` for GPT models, and `opencode run` for other families. Keep every reviewer read-only.
 
-If the Task tool rejects a configured entry, run that reviewer on the table default of its family and say so. Families go by prefix: `claude-*`, `gpt-*`, and `grok-*`. With no family match, use Reviewer A's default. If it rejects a table default, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with it, and open a separate PR to update the default table. Do not block the review on the slug issue. Never treat an alias entry as a rejected slug or apply either fallback to it.
+If the host or CLI rejects a model, use the closest available model of the same family and say so. If no model of that family is available, use a family no other reviewer uses and say so. If only one model is available, do the review with that model and say so. Do not block the review on an unavailable model.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
