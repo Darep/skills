@@ -14,8 +14,8 @@ Use these mappings directly. Do not spend time rediscovering flags unless the
 user asks for a different model or the command fails.
 
 Prefer `claude` if available, over opencode, for Claude models such as Opus.
-If the `claude` CLI is unavailable, OpenCode Zen can run Claude models; OpenCode
-Go cannot. Never switch between Zen and Go silently.
+If the `claude` CLI is unavailable, OpenCode Zen or GitHub Copilot can run Claude
+models; OpenCode Go cannot. Never switch between Zen and Go silently.
 Prefer `codex exec` when calling Codex from another agent such as Claude Code.
 
 If user mentions "ultracode" it means `xhigh` effort and asking Opus to use
@@ -34,6 +34,8 @@ dynamic workflows.
 - OpenCode
   - Zen provider prefix -> `opencode/`
   - Go provider prefix -> `opencode-go/`
+  - GitHub Copilot provider prefix -> `github-copilot/`
+  - `opus 5.5` on Copilot -> `github-copilot/claude-opus-5.5`
   - `kimi k3` on Zen -> `opencode/kimi-k3`
   - `kimi k3` on Go -> `opencode-go/kimi-k3`
   - `opus 5.5` on Zen -> `opencode/claude-opus-5-5`
@@ -122,11 +124,35 @@ codex
 
 ### OpenCode
 
-When the user does not name a model, choose the best fit for the task from
-`opencode/kimi-k3`, `opencode-go/glm-5.3-flash`, and
-`opencode/gemini-3.8-flash`. Treat them as peer candidates rather than using a
-fixed default. Consider the task, expected speed and depth, and model
-availability. Honor an explicit user choice.
+#### Per-machine provider
+
+Each machine may set its OpenCode provider in the `OPENCODE_PROVIDER`
+environment variable (in a local shell dotfile, not in this repo). Read it
+before choosing a model:
+
+```bash
+echo "$OPENCODE_PROVIDER"
+```
+
+- If the user names a provider or model, use it. That choice overrides the
+  variable.
+- If `OPENCODE_PROVIDER` is set, choose only models with that prefix, from
+  the candidates below.
+- If it is empty or unset, omit `-m` so OpenCode uses this machine's default
+  model from `~/.config/opencode/opencode.json`.
+
+Candidates per provider. Treat them as peers, not as a fixed default. Pick the
+one that best fits the task and its expected speed and depth:
+
+- `opencode` (Zen): `opencode/kimi-k3`, `opencode/gemini-3.8-flash`,
+  `opencode/claude-opus-5-5`
+- `opencode-go` (Go): `opencode-go/glm-5.3-flash`, `opencode-go/kimi-k3`
+- `github-copilot`: `github-copilot/claude-opus-5.5`,
+  `github-copilot/gpt-6.1-sol`, `github-copilot/kimi-k3`,
+  `github-copilot/gemini-3.8-flash`
+
+Copilot model IDs use dots (`claude-opus-5.5`); Zen uses dashes
+(`claude-opus-5-5`).
 
 Non-interactive with the chosen model:
 
@@ -159,15 +185,17 @@ If the user explicitly asks to see reasoning blocks, add:
 --thinking
 ```
 
-OpenCode model names are `provider/model`: `opencode/...` uses Zen and
-`opencode-go/...` uses Go. If the user names one, use it. If they do not name a
-provider or model, omit `-m` rather than guessing which subscription is current.
+OpenCode model names are `provider/model`: `opencode/...` uses Zen,
+`opencode-go/...` uses Go, and `github-copilot/...` uses Copilot. Resolve the
+provider as described in "Per-machine provider" above; never guess which
+subscription is current.
 If a requested model fails or appears stale, discover live IDs and variants
 with:
 
 ```bash
 opencode models opencode --verbose
 opencode models opencode-go --verbose
+opencode models github-copilot --verbose
 ```
 
 Do not rediscover models on every run; use this only after a model-related
@@ -199,12 +227,15 @@ claude --model claude-opus-5-5 --effort xhigh
   clearly.
 - Prefer non-interactive commands (`codex exec`, `opencode run`, `claude -p`)
   unless the user explicitly wants an interactive session.
-- Treat OpenCode Go and OpenCode Zen as separate providers. Honor the provider
-  the user names; otherwise omit `-m` and preserve OpenCode's active default.
-- Do not fall back between `opencode/...` and `opencode-go/...` without the
-  user's approval because that changes which subscription pays.
+- Treat OpenCode Zen, Go, and GitHub Copilot as separate providers. Use the
+  provider the user names; otherwise use `$OPENCODE_PROVIDER`; otherwise omit
+  `-m` and keep OpenCode's active default.
+- Do not fall back between providers (`opencode/`, `opencode-go/`,
+  `github-copilot/`) without the user's approval because that changes which
+  subscription pays.
 - If the `claude` CLI is unavailable, use `opencode/claude-*` only when Zen is
-  selected. Go currently has no Claude models.
+  selected, or `github-copilot/claude-*` only when Copilot is selected. Go
+  currently has no Claude models.
 - When calling Codex from Claude Code, use `codex exec`; do not launch the
   interactive TUI unless the user explicitly asks for it.
 - Keep the user prompt materially the same across tools unless the user
