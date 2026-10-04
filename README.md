@@ -30,7 +30,7 @@ These are the LLM skills that I use.
 - [ponytail-help](skills/ponytail-help/SKILL.md) - Quick reference for Ponytail commands, modes, and related skills.
 - [ponytail-review](skills/ponytail-review/SKILL.md) - Diff review focused only on unnecessary complexity.
 
-### [pstack](https://github.com/cursor/plugins/tree/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/pstack) by Lauren Tan
+### [pstack](https://github.com/cursor/plugins/tree/e43c7ee26e0038c6c1fa8380dd34ce86ff94cb2a/pstack) by Lauren Tan
 
 - [interrogate](skills/interrogate/SKILL.md) - Adversarial multi-model review of a diff or PR, synthesized into one verdict.
 - [opening-a-pr](skills/opening-a-pr/SKILL.md) - Open focused, ready PRs with ordered commits, stacks, and a briefing-style title and body.
