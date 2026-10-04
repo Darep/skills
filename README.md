@@ -42,6 +42,8 @@ These are the LLM skills that I use.
 
 Adapted for Codex, Claude Code, and OpenCode. `opening-a-pr` comes from the `poteto-mode` playbook of the same name.
 
+Deviation from upstream: `interrogate` and `unslop` do not set `disable-model-invocation`, because Claude Code blocks one skill from running a skill with that flag. `unslop` triggers only on request instead of always.
+
 ### [Cursor Team Kit](https://github.com/cursor/plugins/tree/ecc249f1e306fc64ddf83c7bed16cacf7c2239db/cursor-team-kit) by Cursor (MIT)
 
 - [deslop](skills/deslop/SKILL.md) - Remove AI-generated slop from the branch diff.

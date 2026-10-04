@@ -1,7 +1,6 @@
 ---
 name: unslop
-description: Cut AI tells from any writing. Must always apply.
-disable-model-invocation: true
+description: Cut AI tells from prose. Use when asked to unslop, de-AI, or clean up writing, or when another skill says to apply unslop.
 ---
 
 # Unslop
