@@ -1,24 +1,32 @@
 # AGENTS.md
 
-Agent skills under `skills/<name>/`. Most are copied from upstream projects, credited in `README.md`. Stay as close to upstream as possible. Only deliberate local adaptations differ.
+Skills live in `skills/<name>/`. `README.md` credits each community skill's source. Skills under "My Skills" are ours.
 
-## Updating a skill from upstream
+## Updating community skills
 
-1. Find the source in `README.md`. Before syncing, check that the source is still the freshest copy. A skill can live in more than one repo (`how` is in both `poteto/how` and pstack, and pstack is newer).
-2. Find the last synced upstream commit from the README pin or the skill's history (`git log -- skills/<name>`).
-3. Diff our copy against upstream at that commit. The differences are the local adaptations.
-4. Copy the latest upstream files verbatim, then reapply only those adaptations. Do not reword, reformat, or "improve" upstream text.
-5. Diff against latest upstream again to confirm only the adaptations remain.
+Community skills are verbatim copies of upstream, except pstack (below). To update one:
 
-## Local adaptations
+1. Check that the README source is still the freshest copy. A skill can live in more than one repo (`poteto/how` is older than pstack's `how`). Ask before switching sources.
+2. Resolve upstream's latest commit once and use that SHA throughout.
+3. Replace our skill folder with upstream's, including deletions and renames. Do not reword or reformat. Keep a `LICENSE` file we added.
+4. Commit as `fix(<skill>): update skill to upstream <short-sha>`.
 
-- Host-neutral wording so skills work in Claude Code, Codex, OpenCode, and Cursor. No Cursor-only tool fields, paths, or rule files.
-- Claude models as defaults where upstream names models a host can't select.
-- No references to skills this repo doesn't ship.
-- Deviations listed in `README.md` stay.
+## pstack
 
-## Conventions
+pstack skills are adapted to run in Claude Code, Codex, and OpenCode, not only Cursor. Sync them by reapplying our adaptations to the new upstream:
 
-- One commit per skill or skill group: `fix(<skill>): update skill to upstream <short-sha>`.
-- Move a README source pin only when every skill in that group is synced to it.
-- Keep each copied skill's upstream `LICENSE`.
+1. Find the base: the upstream SHA named in the newest commit for this skill (`git log -- skills/<name>`), or the README pstack pin if none names one.
+2. Diff our copy against upstream at the base. The differences are our adaptations.
+3. Copy upstream at the latest SHA, then reapply those adaptations. Adapt new upstream text the same way.
+4. Diff against the latest SHA. Every remaining difference must fit an adaptation below.
+
+Adaptations:
+
+- The host's subagent tool and plain-language settings, not Cursor's Task fields or `pstack-models.mdc`.
+- Claude defaults for roles the host spawns itself (`how`). `interrogate` keeps its model families and runs them through `run-ai-clis`.
+- GitHub (`gh`) and GitLab (`glab`) for PR work, no Graphite.
+- `opening-a-pr` is a skill made from pstack's `opening-a-pr` playbook.
+- No references to skills this repo doesn't ship (such as `why`). Inline what a skill needs from them.
+- The deviations listed in `README.md`.
+
+Move the README pstack pin only when every pstack skill is synced to it.
