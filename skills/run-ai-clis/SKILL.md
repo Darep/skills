@@ -139,7 +139,9 @@ echo "$OPENCODE_PROVIDER"
 - If `OPENCODE_PROVIDER` is set, choose only models with that prefix, from
   the candidates below.
 - If it is empty or unset, omit `-m` so OpenCode uses this machine's default
-  model from `~/.config/opencode/opencode.json`.
+  model from `~/.config/opencode/opencode.json`. If a specific model is
+  required, use `opencode models` (no provider argument) to find the
+  provider that has it, and ask the user if several do.
 
 Candidates per provider. Treat them as peers, not as a fixed default. Pick the
 one that best fits the task and its expected speed and depth:
@@ -229,7 +231,7 @@ claude --model claude-opus-5-5 --effort xhigh
   unless the user explicitly wants an interactive session.
 - Treat OpenCode Zen, Go, and GitHub Copilot as separate providers. Use the
   provider the user names; otherwise use `$OPENCODE_PROVIDER`; otherwise omit
-  `-m` and keep OpenCode's active default.
+  `-m` and keep OpenCode's active default, unless a specific model is required.
 - Do not fall back between providers (`opencode/`, `opencode-go/`,
   `github-copilot/`) without the user's approval because that changes which
   subscription pays.
