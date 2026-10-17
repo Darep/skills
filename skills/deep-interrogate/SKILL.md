@@ -27,7 +27,7 @@ Partition along real module boundaries, not by file count. Each area must be sma
 - What it exposes, which areas it calls, and which areas call it.
 - Risk. Mark an area `high` only if it enforces a trust decision, such as authentication, authorization, or input validation at an entry point, or if it moves money or irreversibly changes stored data. Code that only touches a database or a lock is `normal`. When unsure, use `normal`.
 
-Then pick 2 to 4 cross-cutting concerns that span areas, chosen from what the map shows, for example error propagation, trust boundaries and input validation, data flow through shared models, shared mutable state, or configuration and secrets. Bugs at the boundaries between areas fall outside every area brief, so a reviewer per concern looks for them. For each concern, record the areas it crosses and the specific boundaries to trace, such as a call from one area into another or a model two areas share. Take them from the map.
+Then pick 2 to 4 cross-cutting concerns that span areas, chosen from what the map shows, for example error propagation, trust boundaries and input validation, data flow through shared models, shared mutable state, or configuration and secrets. Concern reviewers trace bugs where each area looks correct alone but the combination is wrong. For each concern, record the areas it crosses and the specific boundaries to trace, such as a call from one area into another or a model two areas share. Take them from the map.
 
 Show the user the area table, the excluded paths, the concerns, and the planned reviewer count. Then stop and wait for the user to confirm or redirect. Do not start Step 3 in the same turn.
 
@@ -55,11 +55,11 @@ Launch all reviewers concurrently. If the host caps concurrency, run them in wav
 
 Every area and every concern needs a result. Drop a result that ignores its brief or the output format, and retry a reviewer whose run fails. Retry once, with the same brief and the same model. After a second miss, record a gap. A gap is not a clean result. Do not report an area as clean because its reviewer never returned.
 
-Compare each area reviewer's `Read` list with the area's core files. If it skipped most of them, retry once. If it still skipped some, report the area as partial and name the unread files.
+Compare each area reviewer's `Read` list with the area's core files. If the reviewer skipped most core files, retry once. If any core files are still unread after the last run, report the area as partial and list them.
 
 ## Step 6, Verify
 
-A review of a whole codebase returns many more findings than a diff review, and more of them are wrong. First merge findings that describe the same issue, including the same root cause reported from different areas, and note which models and briefs raised each one.
+First merge findings that describe the same issue, including the same root cause reported from different areas, and note which models and briefs raised each one.
 
 Reviewers also list problems they spotted outside their brief. Add each one to the findings of the area or concern it belongs to. If that area's reviewer reported the same problem, merge the two and record both models. If not, keep it as a finding that only one model reported.
 
