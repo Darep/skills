@@ -61,6 +61,8 @@ Compare each area reviewer's `Read` list with the area's core files. If it skipp
 
 A review of a whole codebase returns many more findings than a diff review, and more of them are wrong. First merge findings that describe the same issue, including the same root cause reported from different areas, and note which models and briefs raised each one.
 
+Reviewers also list problems they spotted outside their brief. Add each one to the findings of the area or concern it belongs to. If that area's reviewer reported the same problem, merge the two and record both models. If not, keep it as a finding that only one model reported.
+
 Then check every merged `critical` and `warning` finding against the code. Open the cited location, trace the claimed path, and mark the finding `confirmed`, `refuted`, or `unverified`. A finding whose cited location does not exist is `refuted`. Skip `nit` findings.
 
 If there are too many findings to check yourself, spawn read-only verifier subagents with the same instructions. Batch area findings by area and concern findings by concern, and have each verifier return a mark and evidence for every finding in its batch.
