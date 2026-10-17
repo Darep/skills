@@ -38,9 +38,13 @@ These are the LLM skills that I use.
 - [create-verification-skill](skills/create-verification-skill/SKILL.md) - Create a repo-specific skill for repeatable app verification.
 - [maintain-verification-skill](skills/maintain-verification-skill/SKILL.md) - Keep a verification skill and its feature map accurate as the app changes.
 - [how](skills/how/SKILL.md) - Explain how a subsystem works, with parallel explorers for larger questions.
+- [sharpen](skills/sharpen/SKILL.md) - Improve a task's approach and specification, then do the work with an independent check.
+- [in-your-own-words](skills/in-your-own-words/SKILL.md) - Restate the user's goals and the problem they want to solve.
 - [unslop](skills/unslop/SKILL.md) - Edit prose to remove AI writing tells.
 
 Adapted for Codex, Claude Code, and OpenCode. `opening-a-pr` comes from the `poteto-mode` playbook of the same name.
+
+`sharpen` and `in-your-own-words` are imported verbatim from [pstack at 101b274](https://github.com/cursor/plugins/tree/101b274dd991f694e1f7024be2157e5f3adf07de/pstack). They need no host-specific adaptations and retain upstream's explicit-invocation setting.
 
 Deviation from upstream: `interrogate` and `unslop` do not set `disable-model-invocation`, because Claude Code blocks one skill from running a skill with that flag. `unslop` triggers only on request instead of always.
 
