@@ -5,7 +5,7 @@ description: "Use for \"deep interrogate\", \"interrogate the whole codebase\", 
 
 # Deep Interrogate
 
-Adversarially review a whole codebase or a large subsystem. Split it into areas, review each area on a rotating model, add reviewers that follow cross-cutting concerns across area boundaries, verify the findings, and return one verdict. As in `interrogate`, the adversarial signal comes from model diversity. Do NOT auto-apply changes.
+Adversarially review a whole codebase or a large subsystem. Split it into areas, review each area on a rotating model, add reviewers that follow cross-cutting concerns across area boundaries, verify the findings, and return one verdict. Most areas get only one reviewer. Two models look at the same code only in high-risk areas, which get a second reviewer, and where a concern reviewer crosses an area. So the most important step is Step 6, which checks every serious finding against the code. Do NOT auto-apply changes.
 
 This skill uses four things from the `interrogate` skill: its default reviewer models, its rubric, its code-quality lens, and its lead-judgment framework. Look for that skill in `../interrogate/`, relative to the directory that contains this SKILL.md, not the repository under review. If it is not there, look for the installed `interrogate` skill by name. If you cannot find it, tell the user to install `interrogate` and stop.
 
