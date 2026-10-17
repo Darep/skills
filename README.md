@@ -57,5 +57,5 @@ Deviation from upstream: `interrogate` and `unslop` do not set `disable-model-in
 
 ### Other
 
-- [bro](skills/bro/SKILL.md) - Re-explain the previous assistant message in plain language. ([luchasarie/bro-skill](https://github.com/luchasarie/bro-skill), MIT)
+- [bro](skills/bro/SKILL.md) - Re-explain the previous assistant message, or pasted text, in plain language. ([luchasarie/bro-skill](https://github.com/luchasarie/bro-skill), MIT)
 - [i-have-adhd](skills/i-have-adhd/SKILL.md) - Shape responses for ADHD-friendly reading with clear actions, numbered steps, and fewer tangents. ([ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd), MIT)
