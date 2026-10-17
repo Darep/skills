@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-Every spawn is a general-purpose, read-only subagent spawned with the host's subagent tool. Explorers use the explorer role (default `claude-sonnet-5-5`), and every explainer uses the explainer role (default `claude-opus-5-5-xhigh`). Set the model to the one the user names for that role, or to the default. If the host rejects a model, use the closest model it offers in the same family and say so. If it offers none in that family, use the host's model and say so.
+Every spawn is a general-purpose, read-only subagent spawned with the host's subagent tool. Explorers use the explorer role (default `claude-sonnet-5-5`), and every explainer uses the explainer role (default `claude-opus-5-5-xhigh`). Set the model to the one the user names for that role, or to the default. If the host rejects a model, use the closest model it offers in the same family and say so. If it offers none in that family, use the host's model and say so. Pick each subagent's reasoning effort for the job: raise it one step for the hardest or subtlest questions and lower it for routine ones. Change only the effort, never the model.
 
 ## 1. Assess complexity
 
