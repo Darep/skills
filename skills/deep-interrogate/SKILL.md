@@ -9,8 +9,6 @@ Adversarially review a whole codebase or a large subsystem. Split it into areas,
 
 This skill reuses the rubric, code-quality lens, and lead-judgment framework from the `interrogate` skill. Find them in `../interrogate/references/`, relative to the directory that contains this SKILL.md, not the repository under review. If they are not there, look for the installed `interrogate` skill by name and use its `references/` directory. If you cannot find it, tell the user to install `interrogate` and stop.
 
-Open a todolist with one entry per step before spawning anything.
-
 ## Step 1, Scope and purpose
 
 Take the scope from the user: the whole repo, or the directories or subsystem they name. Exclude vendored, generated, and build-output code unless the user asks for it.
