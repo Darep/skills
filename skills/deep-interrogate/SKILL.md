@@ -7,7 +7,7 @@ description: "Use for \"deep interrogate\", \"interrogate the whole codebase\", 
 
 Adversarially review a whole codebase or a large subsystem. Split it into areas, review each area on a rotating model, add reviewers that follow cross-cutting concerns across area boundaries, verify the findings, and return one verdict. As in `interrogate`, the adversarial signal comes from model diversity. Do NOT auto-apply changes.
 
-This skill reuses the rubric, code-quality lens, and lead-judgment framework from the `interrogate` skill. Find them in `../interrogate/references/`, relative to the directory that contains this SKILL.md, not the repository under review. If they are not there, look for the installed `interrogate` skill by name and use its `references/` directory. If you cannot find it, tell the user to install `interrogate` and stop.
+This skill uses four things from the `interrogate` skill: its default reviewer models, its rubric, its code-quality lens, and its lead-judgment framework. Look for that skill in `../interrogate/`, relative to the directory that contains this SKILL.md, not the repository under review. If it is not there, look for the installed `interrogate` skill by name. If you cannot find it, tell the user to install `interrogate` and stop.
 
 ## Step 1, Scope and purpose
 
@@ -33,12 +33,7 @@ Show the user the area table, the excluded paths, the concerns, and the planned 
 
 ## Step 3, Assign models
 
-Use the reviewer models the user names. Otherwise use these defaults:
-
-| Model | Effort |
-|-------|--------|
-| Claude Opus 5.5 | xhigh |
-| Grok 4.7 | xhigh |
+Use the reviewer models the user names. Otherwise use the default models listed in Step 3 of the `interrogate` skill, at the effort listed there.
 
 Running every model on every area costs too much at this scale. Assign reviewers this way:
 
@@ -52,7 +47,7 @@ If the host or CLI rejects a model, use the closest available model of the same 
 
 ## Step 4, Fan out
 
-Build every reviewer's prompt from `references/reviewer-prompt.md`, filling in the purpose, the reviewer's brief, the full area table, and the contents of the interrogate `rubric.md` and `code-quality-review.md`. An area brief is the area's record from Step 2. A concern brief is the concern, the areas it crosses, and the boundaries to trace. Every brief stands alone. A reviewer sees no other reviewer's brief or output.
+Build every reviewer's prompt from `references/reviewer-prompt.md`, filling in the purpose, the reviewer's brief, the full area table, and the contents of `rubric.md` and `code-quality-review.md` from interrogate's `references/` directory. An area brief is the area's record from Step 2. A concern brief is the concern, the areas it crosses, and the boundaries to trace. Every brief stands alone. A reviewer sees no other reviewer's brief or output.
 
 Launch all reviewers concurrently. If the host caps concurrency, run them in waves. For reviewers that run through a CLI, write each filled prompt to its own file and pass it on stdin, not as a quoted argument, and write each reviewer's output to its own file. Run at most 4 CLI reviewers at once.
 
@@ -74,7 +69,7 @@ If there are too many findings to check yourself, spawn read-only verifier subag
 
 You are the lead reviewer, a pragmatic senior engineer, not a neutral aggregator. A finding raised independently by two models, or by an area reviewer and a concern reviewer, is the highest signal.
 
-Read the interrogate `lead-judgment.md` and apply it, with these changes, because it was written for a diff:
+Read `lead-judgment.md` from interrogate's `references/` directory and apply it, with these changes, because it was written for a diff:
 
 - Reviewers here read existing code in full, not a diff. Do not dismiss a finding because the author didn't touch the code or because the reviewer could not see the call chain.
 - A pattern repeated across the codebase is a finding, not missing context. When areas share the same flaw, report it once as a systemic issue.
