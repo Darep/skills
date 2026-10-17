@@ -18,13 +18,22 @@ Judge the code against this purpose. Do NOT question the purpose itself.
 
 {BRIEF}
 
-If your brief is an area, read the core code in the listed paths in full. Read neighboring areas only as far as you need to understand how your area is called and what it calls. Report problems inside your area and problems in how it uses its interfaces.
+If your brief is an area, read its core files in full. Read neighboring areas only as far as you need to understand how your area is called and what it calls. Report problems inside your area and problems in how it uses its interfaces.
 
-If your brief is a concern, follow it across every area it touches. Look for problems at the boundaries between areas, where each area looks correct alone but the combination is wrong. Examples are an error dropped between layers, input validated at one entry point but not another, and a shared model whose invariants two areas disagree on. Do not re-review an area's internals for unrelated issues.
+If your brief is a concern, trace the boundaries it lists across the areas it crosses. Look for problems at the boundaries between areas, where each area looks correct alone but the combination is wrong. Examples are an error dropped between layers, input validated at one entry point but not another, and a shared model whose invariants two areas disagree on. Do not re-review an area's internals for unrelated issues.
 
 ## Area map
 
 {AREA_TABLE}
+
+## Reading the guidance below
+
+The rubric and code-quality lens below were written for reviewing a diff. Apply them to the existing code in your brief, with these readings:
+
+- "The change", "the PR", "the diff", and "the current branch's changes" mean the code in your brief. Do not run `git diff` or limit yourself to recent changes.
+- "The intent" means the system purpose above.
+- Ignore the rules about a PR pushing a file over 1000 lines and the approval bar. Flag a large file only when its size causes a concrete problem you can show.
+- Where the guidance names specific tools such as Read, Grep, or Glob, use whatever read-only tools you have.
 
 ## Review rubric
 
@@ -33,8 +42,6 @@ If your brief is a concern, follow it across every area it touches. Look for pro
 ## Code quality lens
 
 {CODE_QUALITY_CONTENTS}
-
-The lens above is written for a diff. Apply it to the existing code in your brief, and read "the change" or "the PR" as "the code under review".
 
 ## Instructions
 
@@ -52,7 +59,7 @@ For each finding, provide:
 3. **Evidence**: The execution path or code that shows the problem. For `critical` and `warning`, show the call chain or input path. A finding without evidence will be discarded.
 4. **Suggestion** (optional): What you'd do instead, only if you have a concrete alternative.
 
-Report every issue you can prove, not only the first. Do not pad the list. A finding that amounts to "I would have done this differently" is not a finding. Do not restate what the code does without identifying a problem. Do not praise the code. If you find nothing wrong, say "no findings" and stop. An empty review is a valid outcome.
+Report every issue you can prove, not only the first. Do not pad the list. A finding that amounts to "I would have done this differently" is not a finding. Do not restate what the code does without identifying a problem. Do not praise the code. If you find nothing wrong, write `no findings` under `## Findings`. An empty review is a valid outcome, and it still starts with the `## Read` list.
 
 ## Output
 

@@ -1,13 +1,13 @@
 ---
 name: deep-interrogate
-description: "Use for \"deep interrogate\", \"interrogate the whole codebase\", \"audit this repo\", or adversarial multi-model review of an entire codebase or large subsystem rather than a diff. Partitions the code into areas, fans out reviewers across models, verifies findings, and returns one verdict."
+description: "Use for \"deep interrogate\", \"interrogate the whole codebase\", or adversarial multi-model review of an entire codebase or large subsystem rather than a diff. Partitions the code into areas, fans out reviewers across models, verifies findings, and returns one verdict."
 ---
 
 # Deep Interrogate
 
 Adversarially review a whole codebase or a large subsystem. Split it into areas, review each area on a rotating model, add reviewers that follow cross-cutting concerns across area boundaries, verify the findings, and return one verdict. As in `interrogate`, the adversarial signal comes from model diversity. Do NOT auto-apply changes.
 
-This skill reuses the review content from the `interrogate` skill. Its rubric, code-quality lens, and lead-judgment framework live in `../interrogate/references/`. If that directory is missing, tell the user to install `interrogate` and stop.
+This skill reuses the rubric, code-quality lens, and lead-judgment framework from the `interrogate` skill. Find them in `../interrogate/references/`, relative to the directory that contains this SKILL.md, not the repository under review. If they are not there, look for the installed `interrogate` skill by name and use its `references/` directory. If you cannot find it, tell the user to install `interrogate` and stop.
 
 Open a todolist with one entry per step before spawning anything.
 
@@ -19,18 +19,19 @@ State the system's purpose in one paragraph, drawn from the README, docs, and en
 
 ## Step 2, Map and partition
 
-Map the code before splitting it. Read the top-level layout, build files, and entry points, and measure the size of each candidate area (for example `git ls-files <dir> | xargs wc -l`). For a large or unfamiliar repo, spawn read-only explorer subagents to map separate top-level regions concurrently.
+Map the code before splitting it. Read the top-level layout, build files, and entry points, and count the lines in each candidate area, leaving out the Step 1 exclusions. For a large or unfamiliar repo, spawn read-only explorer subagents to map separate top-level regions concurrently. Have each return the directories it found, what each one does, and how they call each other.
 
-Partition along real module boundaries, not by file count. Each area must be small enough for one reviewer to read its core code in full. Split an oversized area, and merge trivial ones into a neighbor. For each area, record:
+Partition along real module boundaries, not by file count. Each area must be small enough for one reviewer to read its core files in full. Split an oversized area, and merge trivial ones into a neighbor. Every in-scope directory belongs to exactly one area or is listed as excluded with a reason. For each area, record:
 
 - Name and paths.
+- Core files, the ones the reviewer must read in full.
 - One line on what it does in the system.
 - What it exposes, which areas it calls, and which areas call it.
-- Risk, `high` for auth, trust boundaries, persistence, money, concurrency, or migrations, otherwise `normal`.
+- Risk. Mark an area `high` only if it enforces a trust decision, such as authentication, authorization, or input validation at an entry point, or if it moves money or irreversibly changes stored data. Code that only touches a database or a lock is `normal`. When unsure, use `normal`.
 
-Then pick 2 to 4 cross-cutting concerns that span areas, chosen from what the map shows, for example error propagation, trust boundaries and input validation, data flow through shared models, shared mutable state, or configuration and secrets. Bugs at the boundaries between areas fall outside every area brief, so a reviewer per concern looks for them.
+Then pick 2 to 4 cross-cutting concerns that span areas, chosen from what the map shows, for example error propagation, trust boundaries and input validation, data flow through shared models, shared mutable state, or configuration and secrets. Bugs at the boundaries between areas fall outside every area brief, so a reviewer per concern looks for them. For each concern, record the areas it crosses and the specific boundaries to trace, such as a call from one area into another or a model two areas share. Take them from the map.
 
-Show the user the area table and the concerns, with the planned reviewer count, before Step 3. Proceed unless they redirect.
+Show the user the area table, the excluded paths, the concerns, and the planned reviewer count. Then stop and wait for the user to confirm or redirect. Do not start Step 3 in the same turn.
 
 ## Step 3, Assign models
 
@@ -47,35 +48,45 @@ Running every model on every area costs too much at this scale. Assign reviewers
 - A second reviewer on a different model for each high-risk area.
 - One reviewer per cross-cutting concern, again rotating models.
 
-Each reviewer must run on its own model. Spawn a reviewer with the host's subagent tool when that tool can select its model. Otherwise run it through the matching local CLI with the commands and model IDs from the `run-ai-clis` skill: `claude` for Claude models, `codex exec` for GPT models, and `opencode run` for other families. Keep every reviewer read-only.
+Each reviewer runs on the model this rotation assigns it, not on the parent's model. Spawn a reviewer with the host's subagent tool when that tool can select its model. Otherwise run it through the matching local CLI with the commands and model IDs from the `run-ai-clis` skill: `claude` for Claude models, `codex exec` for GPT models, and `opencode run` for other families. Keep every reviewer read-only.
 
-If the host or CLI rejects a model, use the closest available model of the same family and say so. If no model of that family is available, use a family no other reviewer uses and say so. If only one model is available, do the review with that model and say so. Do not block the review on an unavailable model.
+If the host or CLI rejects a model, use the closest available model of the same family and say so. If no model of that family is available, rotate across the models that remain and say so. If only one model is available, run every brief on it, skip the second reviewer on high-risk areas, and say so. Do not block the review on an unavailable model.
 
 ## Step 4, Fan out
 
-Build every reviewer's prompt from `references/reviewer-prompt.md`, filling in the purpose, the reviewer's brief (one area or one concern), the full area table, and the contents of `../interrogate/references/rubric.md` and `../interrogate/references/code-quality-review.md`. Every brief stands alone. A reviewer sees no other reviewer's brief or output.
+Build every reviewer's prompt from `references/reviewer-prompt.md`, filling in the purpose, the reviewer's brief, the full area table, and the contents of the interrogate `rubric.md` and `code-quality-review.md`. An area brief is the area's record from Step 2. A concern brief is the concern, the areas it crosses, and the boundaries to trace. Every brief stands alone. A reviewer sees no other reviewer's brief or output.
 
-Launch all reviewers concurrently. If the host caps concurrency, run them in waves.
+Launch all reviewers concurrently. If the host caps concurrency, run them in waves. For reviewers that run through a CLI, write each filled prompt to its own file and pass it on stdin, not as a quoted argument, and write each reviewer's output to its own file. Run at most 4 CLI reviewers at once.
 
 ## Step 5, Collect
 
-Every area and every concern needs a result. Drop a result that ignores its brief or the output format, and respawn that reviewer once. After a second miss, or if the reviewer fails, record a gap. A gap is not a clean result. Do not report an area as clean because its reviewer never returned.
+Every area and every concern needs a result. Drop a result that ignores its brief or the output format, and retry a reviewer whose run fails. Retry once, with the same brief and the same model. After a second miss, record a gap. A gap is not a clean result. Do not report an area as clean because its reviewer never returned.
+
+Compare each area reviewer's `Read` list with the area's core files. If it skipped most of them, retry once. If it still skipped some, report the area as partial and name the unread files.
 
 ## Step 6, Verify
 
-A review of a whole codebase returns many more findings than a diff review, and more of them are wrong. Before judging, check every `critical` and `warning` finding against the code. Open the cited location, trace the claimed path, and mark the finding `confirmed`, `refuted`, or `unverified`. Skip `nit` findings.
+A review of a whole codebase returns many more findings than a diff review, and more of them are wrong. First merge findings that describe the same issue, including the same root cause reported from different areas, and note which models and briefs raised each one.
 
-If there are too many findings to check yourself, spawn read-only verifier subagents. Give each one a batch of findings from one area, and have it return the same three marks with evidence. Put each refuted finding in Dismissed with the reason.
+Then check every merged `critical` and `warning` finding against the code. Open the cited location, trace the claimed path, and mark the finding `confirmed`, `refuted`, or `unverified`. A finding whose cited location does not exist is `refuted`. Skip `nit` findings.
 
-## Step 7, Synthesize and judge
+If there are too many findings to check yourself, spawn read-only verifier subagents with the same instructions. Batch area findings by area and concern findings by concern, and have each verifier return a mark and evidence for every finding in its batch.
 
-Merge findings that describe the same issue, including the same root cause reported from different areas, and note which models and briefs raised each one. A finding raised independently by two models, or by an area reviewer and a concern reviewer, is the highest signal.
+## Step 7, Judge
 
-You are the lead reviewer, a pragmatic senior engineer, not a neutral aggregator. Read `../interrogate/references/lead-judgment.md` and apply it, with one change. That framework treats a suggestion to change code the author didn't touch as a sign of missing context. Here every reviewer examines existing code, so that rule does not apply. Put every finding in one of four buckets, with the models that raised it and a one-line rationale:
+You are the lead reviewer, a pragmatic senior engineer, not a neutral aggregator. A finding raised independently by two models, or by an area reviewer and a concern reviewer, is the highest signal.
+
+Read the interrogate `lead-judgment.md` and apply it, with these changes, because it was written for a diff:
+
+- Reviewers here read existing code in full, not a diff. Do not dismiss a finding because the author didn't touch the code or because the reviewer could not see the call chain.
+- A pattern repeated across the codebase is a finding, not missing context. When areas share the same flaw, report it once as a systemic issue.
+- Ignore any limit it sets on the length of Act on, and use the one below.
+
+Put every finding in one of four buckets, with the models that raised it and a one-line rationale:
 
 - **Act on**. Confirmed issues affecting correctness, security, or maintainability given the system's purpose. Aim for at most 10, ordered by severity.
-- **Consider**. Legitimate, but you're not sure they outweigh the cost of addressing them now.
-- **Noted**. Technically valid but not actionable, or unverified.
+- **Consider**. Legitimate, but you're not sure they outweigh the cost of addressing them now. Put unverified `critical` findings here, marked unverified.
+- **Noted**. Technically valid but not actionable, and unverified `warning` findings.
 - **Dismissed**. Wrong, refuted, nitpicky, or missing context, with a brief reason.
 
 ## Output format
@@ -87,7 +98,7 @@ You are the lead reviewer, a pragmatic senior engineer, not a neutral aggregator
 | Area or concern | Paths | Model(s) | Result |
 |-----------------|-------|----------|--------|
 
-Result is `N findings`, `no findings`, or `GAP: [reason]`.
+Paths for a concern are the boundaries it traced. Result is `N findings`, `no findings`, `partial: [unread files]`, or `GAP: [reason]`. Mark high-risk areas that ran on a single model. List excluded paths below the table.
 
 ### Act on
 [Each: description, location, which models and briefs raised it, why it matters.]
