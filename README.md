@@ -23,12 +23,12 @@ These are the LLM skills that I use.
 
 ### [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (MIT)
 
-- [ponytail](skills/ponytail/SKILL.md) - Minimalist mode for shipping the simplest solution that actually works.
-- [ponytail-audit](skills/ponytail-audit/SKILL.md) - Whole-repo audit for over-engineering and removable complexity.
-- [ponytail-debt](skills/ponytail-debt/SKILL.md) - Ledger of `ponytail:` comments and deliberate shortcuts.
+- [ponytail](skills/ponytail/SKILL.md) - Lazy senior dev mode: the smallest complete change and a reply you understand in one read.
+- [ponytail-audit](skills/ponytail-audit/SKILL.md) - Whole-repo quality audit: bugs, security, load, missing tests, speed, and what to cut.
+- [ponytail-debt](skills/ponytail-debt/SKILL.md) - Ledger of `shortcut:` comments and deliberate shortcuts.
 - [ponytail-gain](skills/ponytail-gain/SKILL.md) - Scoreboard of Ponytail's measured impact from its benchmarks.
 - [ponytail-help](skills/ponytail-help/SKILL.md) - Quick reference for Ponytail commands, modes, and related skills.
-- [ponytail-review](skills/ponytail-review/SKILL.md) - Diff review focused only on unnecessary complexity.
+- [ponytail-review](skills/ponytail-review/SKILL.md) - Diff quality review: bugs, security, load, missing tests, speed, and what to cut.
 
 ### [pstack](https://github.com/cursor/plugins/tree/9d76bcab133aefcccb16121d7be874e6aa823729/pstack) by Lauren Tan
 
