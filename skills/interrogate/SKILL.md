@@ -34,7 +34,7 @@ Each reviewer must run on its own model, because the signal comes from model div
 
 If the host or CLI rejects a model, use the closest available model of the same family and say so. If no model of that family is available, use a family no other reviewer uses and say so. If only one model is available, do the review with that model and say so. Do not block the review on an unavailable model.
 
-Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`.
+Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each reviewer's effort for the job, starting from the table: raise it one step for the hardest or subtlest changes and lower it for routine ones. Change only the effort, never the model family, so the panel stays diverse.
 
 ## Step 4, Synthesize
 

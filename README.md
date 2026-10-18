@@ -24,14 +24,14 @@ These are the LLM skills that I use.
 
 ### [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (MIT)
 
-- [ponytail](skills/ponytail/SKILL.md) - Minimalist mode for shipping the simplest solution that actually works.
-- [ponytail-audit](skills/ponytail-audit/SKILL.md) - Whole-repo audit for over-engineering and removable complexity.
-- [ponytail-debt](skills/ponytail-debt/SKILL.md) - Ledger of `ponytail:` comments and deliberate shortcuts.
+- [ponytail](skills/ponytail/SKILL.md) - Lazy senior dev mode: the smallest complete change and a reply you understand in one read.
+- [ponytail-audit](skills/ponytail-audit/SKILL.md) - Whole-repo quality audit: bugs, security, load, missing tests, speed, and what to cut.
+- [ponytail-debt](skills/ponytail-debt/SKILL.md) - Ledger of `shortcut:` comments and deliberate shortcuts.
 - [ponytail-gain](skills/ponytail-gain/SKILL.md) - Scoreboard of Ponytail's measured impact from its benchmarks.
 - [ponytail-help](skills/ponytail-help/SKILL.md) - Quick reference for Ponytail commands, modes, and related skills.
-- [ponytail-review](skills/ponytail-review/SKILL.md) - Diff review focused only on unnecessary complexity.
+- [ponytail-review](skills/ponytail-review/SKILL.md) - Diff quality review: bugs, security, load, missing tests, speed, and what to cut.
 
-### [pstack](https://github.com/cursor/plugins/tree/9d76bcab133aefcccb16121d7be874e6aa823729/pstack) by Lauren Tan
+### [pstack](https://github.com/cursor/plugins/tree/09d06eb4b97a1020ab31e84030e38baf1099c7dc/pstack) by Lauren Tan
 
 - [interrogate](skills/interrogate/SKILL.md) - Adversarial multi-model review of a diff or PR, synthesized into one verdict.
 - [opening-a-pr](skills/opening-a-pr/SKILL.md) - Open focused, ready PRs with ordered commits, stacks, and a briefing-style title and body.
@@ -39,9 +39,13 @@ These are the LLM skills that I use.
 - [create-verification-skill](skills/create-verification-skill/SKILL.md) - Create a repo-specific skill for repeatable app verification.
 - [maintain-verification-skill](skills/maintain-verification-skill/SKILL.md) - Keep a verification skill and its feature map accurate as the app changes.
 - [how](skills/how/SKILL.md) - Explain how a subsystem works, with parallel explorers for larger questions.
+- [sharpen](skills/sharpen/SKILL.md) - Improve a task's approach and specification, then do the work with an independent check.
+- [in-your-own-words](skills/in-your-own-words/SKILL.md) - Restate the user's goals and the problem they want to solve.
 - [unslop](skills/unslop/SKILL.md) - Edit prose to remove AI writing tells.
 
 Adapted for Codex, Claude Code, and OpenCode. `opening-a-pr` comes from the `poteto-mode` playbook of the same name.
+
+`sharpen` and `in-your-own-words` are imported verbatim from [pstack at 101b274](https://github.com/cursor/plugins/tree/101b274dd991f694e1f7024be2157e5f3adf07de/pstack). They need no host-specific adaptations and retain upstream's explicit-invocation setting.
 
 Deviation from upstream: `interrogate` and `unslop` do not set `disable-model-invocation`, because Claude Code blocks one skill from running a skill with that flag. `unslop` triggers only on request instead of always.
 
@@ -58,5 +62,5 @@ Deviation from upstream: `interrogate` and `unslop` do not set `disable-model-in
 
 ### Other
 
-- [bro](skills/bro/SKILL.md) - Re-explain the previous assistant message in plain language. ([luchasarie/bro-skill](https://github.com/luchasarie/bro-skill), MIT)
+- [bro](skills/bro/SKILL.md) - Re-explain the previous assistant message, or pasted text, in plain language. ([luchasarie/bro-skill](https://github.com/luchasarie/bro-skill), MIT)
 - [i-have-adhd](skills/i-have-adhd/SKILL.md) - Shape responses for ADHD-friendly reading with clear actions, numbered steps, and fewer tangents. ([ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd), MIT)
