@@ -35,13 +35,15 @@ Show the user the area table, the excluded paths, the concerns, and the planned 
 
 Use the reviewer models the user names. Otherwise use the default models listed in Step 3 of the `interrogate` skill, at the effort listed there.
 
+That effort counts as a request for extra reasoning. For a model run through `opencode run`, pass the effort as `--variant <effort>`. If the model doesn't offer that variant (`opencode models <provider> --verbose`), use its highest one and say so.
+
 Running every model on every area costs too much at this scale. Assign reviewers this way:
 
 - One reviewer per area. Rotate models across areas so each model covers a share.
 - A second reviewer on a different model for each high-risk area.
 - One reviewer per cross-cutting concern, again rotating models.
 
-Each reviewer runs on the model this rotation assigns it, not on the parent's model. Spawn a reviewer with the host's subagent tool when that tool can select its model. Otherwise run it through the matching local CLI with the commands and model IDs from the `run-ai-clis` skill: `claude` for Claude models, `codex exec` for GPT models, and `opencode run` for other families. Keep every reviewer read-only.
+Each reviewer runs on the model this rotation assigns it, not on the parent's model. Spawn a reviewer with the host's subagent tool when that tool can select its model. Otherwise run it through the matching local CLI with the commands and model IDs from the `run-ai-clis` skill: `claude` for Claude models, `codex exec` for GPT models, and `opencode run` for other families. Keep every reviewer read-only. Use a subagent type that can read whole files, not one that returns excerpts. Run `opencode run` with `--agent plan`, which blocks edits but still allows shell commands, so the prompt's rule against writing still applies.
 
 If the host or CLI rejects a model, use the closest available model of the same family and say so. If no model of that family is available, rotate across the models that remain and say so. If only one model is available, run every brief on it, skip the second reviewer on high-risk areas, and say so. Do not block the review on an unavailable model.
 
@@ -49,7 +51,11 @@ If the host or CLI rejects a model, use the closest available model of the same 
 
 Build every reviewer's prompt from `references/reviewer-prompt.md`, filling in the purpose, the reviewer's brief, the full area table, and the contents of `rubric.md` and `code-quality-review.md` from interrogate's `references/` directory. An area brief is the area's record from Step 2. A concern brief is the concern, the areas it crosses, and the boundaries to trace. Every brief stands alone. A reviewer sees no other reviewer's brief or output.
 
+Paste the full text of `rubric.md` and `code-quality-review.md` into each prompt. Do not pass their paths. A CLI reviewer may not be allowed to read files outside the repository under review, and `opencode run` refuses those reads in non-interactive mode.
+
 Launch all reviewers concurrently. If the host caps concurrency, run them in waves. For reviewers that run through a CLI, write each filled prompt to its own file and pass it on stdin, not as a quoted argument, and write each reviewer's output to its own file. Run at most 4 CLI reviewers at once.
+
+Wait for every reviewer to finish before Step 5, and do not end your turn while any is still running. In a headless run such as `claude -p` or `codex exec`, ending the turn ends the process, and reviewers still running are lost.
 
 ## Step 5, Collect
 

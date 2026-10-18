@@ -35,6 +35,8 @@ The rubric and code-quality lens below were written for reviewing a diff. Apply 
 - Ignore the rules about a PR pushing a file over 1000 lines and the approval bar. Flag a large file only when its size causes a concrete problem you can show.
 - Where the guidance names specific tools such as Read, Grep, or Glob, use whatever read-only tools you have.
 
+Do not change anything in the repository: no edits, and no commands that write files there, such as running its code or tests in place. To confirm a finding by running code, copy what you need to a scratch directory outside the repository and run it there.
+
 ## Review rubric
 
 {RUBRIC_CONTENTS}
