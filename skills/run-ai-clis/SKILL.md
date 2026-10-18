@@ -31,7 +31,7 @@ dynamic workflows.
   - allow edits -> `--sandbox workspace-write`
   - machine-readable stream -> `--json`
   - save final answer -> `--output-last-message <file>`
-- OpenCode
+- OpenCode 2.0
   - Zen provider prefix -> `opencode/`
   - Go provider prefix -> `opencode-go/`
   - GitHub Copilot provider prefix -> `github-copilot/`
@@ -40,8 +40,10 @@ dynamic workflows.
   - `kimi k3` on Go -> `opencode-go/kimi-k3`
   - `opus 5.5` on Zen -> `opencode/claude-opus-5-5`
   - `glm 5.3 fast` or `glm 5.3 flash` on Go -> `opencode-go/glm-5.3-flash`
+  - `grok 4.7` on Go -> `opencode-go/grok-4.7`
+  - `grok 4.7` on Zen -> `opencode/grok-4.7`
   - OpenCode Go has no Opus/Claude model
-  - reasoning effort -> `--variant <level>`; valid levels are model-specific
+  - reasoning effort -> `-m 'provider/model#level'`; valid levels are model-specific
   - show reasoning blocks -> `--thinking`
 - Claude Code CLI
   - `opus 5.5` -> `claude-opus-5-5`
@@ -122,7 +124,9 @@ Interactive:
 codex
 ```
 
-### OpenCode
+### OpenCode 2.0
+
+Always use OpenCode 2.0 syntax for OpenCode commands.
 
 #### Per-machine provider
 
@@ -142,13 +146,17 @@ echo "$OPENCODE_PROVIDER"
   model from `~/.config/opencode/opencode.json`. If a specific model is
   required, use `opencode models` (no provider argument) to find the
   provider that has it, and ask the user if several do.
+- If effort is requested without a chosen model, resolve the active/default
+  provider and model from the session or configuration first, then pass that
+  same model with `#<level>`.
 
 Candidates per provider. Treat them as peers, not as a fixed default. Pick the
 one that best fits the task and its expected speed and depth:
 
 - `opencode` (Zen): `opencode/kimi-k3`, `opencode/gemini-3.8-flash`,
-  `opencode/claude-opus-5-5`
-- `opencode-go` (Go): `opencode-go/glm-5.3-flash`, `opencode-go/kimi-k3`
+  `opencode/claude-opus-5-5`, `opencode/grok-4.7`
+- `opencode-go` (Go): `opencode-go/glm-5.3-flash`, `opencode-go/kimi-k3`,
+  `opencode-go/grok-4.7`
 - `github-copilot`: `github-copilot/claude-opus-5.5`,
   `github-copilot/gpt-6.1-sol`, `github-copilot/kimi-k3`,
   `github-copilot/gemini-3.8-flash`
@@ -159,7 +167,7 @@ Copilot model IDs use dots (`claude-opus-5.5`); Zen uses dashes
 Non-interactive with the chosen model:
 
 ```bash
-opencode run -m <chosen-model> "<prompt>"
+opencode run -m '<chosen-model>' "<prompt>"
 ```
 
 Non-interactive with a selected provider and model:
@@ -172,36 +180,47 @@ opencode run -m opencode/kimi-k3 "<prompt>"
 Interactive with the chosen model:
 
 ```bash
-opencode -m <chosen-model>
+opencode mini -m '<chosen-model>'
 ```
 
-If the user explicitly asks for OpenCode reasoning effort, the flag is:
+If the user explicitly asks for OpenCode reasoning effort, append `#<level>`
+to the model selector:
 
 ```bash
---variant <level>
+opencode run -m 'opencode-go/grok-4.7#xhigh' "<prompt>"
 ```
 
-If the user explicitly asks to see reasoning blocks, add:
+Use `#variant`, not the OpenCode 1.x `--variant` flag. Grok 4.7 on Go
+supports `low`, `medium`, `high`, and `xhigh`; other models have their own
+variant names.
+
+If the user explicitly asks to see reasoning blocks, add to `opencode run`:
 
 ```bash
 --thinking
 ```
 
-OpenCode model names are `provider/model`: `opencode/...` uses Zen,
-`opencode-go/...` uses Go, and `github-copilot/...` uses Copilot. Resolve the
+OpenCode model selectors are `provider/model#variant` (variant optional).
+`opencode/...` uses Zen, `opencode-go/...` uses Go, and
+`github-copilot/...` uses Copilot. Resolve the
 provider as described in "Per-machine provider" above; never guess which
 subscription is current.
 If a requested model fails or appears stale, discover live IDs and variants
 with:
 
 ```bash
-opencode models opencode --verbose
-opencode models opencode-go --verbose
-opencode models github-copilot --verbose
+opencode models
+opencode api model.list
 ```
 
+`models` lists available provider/model IDs. `api model.list` returns JSON
+with model metadata in `data`; find the chosen `providerID` and `id`, then
+inspect its `variants` array for supported IDs and settings. OpenCode 2.0's
+`models` command takes no provider argument or `--verbose` flag.
+
 Do not rediscover models on every run; use this only after a model-related
-failure or when the user requests a model not mapped above.
+failure, when the user requests a model not mapped above, or when requested
+effort requires checking a model's supported variants.
 
 ### Claude Code CLI
 
@@ -246,8 +265,8 @@ claude --model claude-opus-5-5 --effort xhigh
   its default read-only mode for analysis and review.
 - Use `codex review` for review-only tasks when the user asks Codex to review
   repository changes.
-- Do not guess OpenCode `--variant` values unless the user explicitly asked for
-  extra reasoning.
+- Select an OpenCode reasoning variant only when the user asks for a
+  reasoning effort level; use a supported variant ID in the model selector.
 - If the user explicitly asks for Claude `max` effort, use `--effort max`
   instead of `xhigh`.
 - Do not use Codex `--dangerously-bypass-approvals-and-sandbox` unless the user
