@@ -55,7 +55,9 @@ Paste the full text of `rubric.md` and `code-quality-review.md` into each prompt
 
 Launch all reviewers concurrently. If the host caps concurrency, run them in waves. For reviewers that run through a CLI, write each filled prompt to its own file and pass it on stdin, not as a quoted argument, and write each reviewer's output to its own file. Run at most 4 CLI reviewers at once.
 
-Wait for every reviewer to finish before Step 5, and do not end your turn while any is still running. In a headless run such as `claude -p` or `codex exec`, ending the turn ends the process, and reviewers still running are lost.
+Keep prompts, outputs, and scratch copies in a new directory made with `mktemp -d`. Never delete or overwrite a path you did not create in this run.
+
+Wait for every reviewer to finish before Step 5, and do not end your turn while any is still running. In a headless run such as `claude -p` or `codex exec`, ending the turn may end the process, and reviewers still running are lost.
 
 Do not put a time limit on reviewers. A long experiment can be what confirms a finding. If the host or a tool forces a limit, set it as high as allowed and note it in Coverage.
 
@@ -73,7 +75,7 @@ First merge findings that describe the same issue, including the same root cause
 
 Reviewers also list problems they spotted outside their brief. Add each one to the findings of the area or concern it belongs to. If that area's reviewer reported the same problem, merge the two and record both models. If not, keep it as a finding that only one model reported.
 
-Then check every merged `critical` and `warning` finding against the code. Open the cited location, trace the claimed path, and mark the finding `confirmed`, `refuted`, or `unverified`. A finding whose cited location does not exist is `refuted`. Skip `nit` findings.
+Then check every merged `critical` and `warning` finding against the code. Open the cited location, trace the claimed path, and mark the finding `confirmed`, `refuted`, or `unverified`. A finding whose cited location does not exist is `refuted`. Skip `nit` findings. To check a finding by running code, use a copy in your Step 4 directory, never the repository.
 
 If there are too many findings to check yourself, spawn read-only verifier subagents with the same instructions. Batch area findings by area and concern findings by concern, and have each verifier return a mark and evidence for every finding in its batch.
 
