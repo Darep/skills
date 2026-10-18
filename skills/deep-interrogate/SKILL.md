@@ -35,7 +35,7 @@ Show the user the area table, the excluded paths, the concerns, and the planned 
 
 Use the reviewer models the user names. Otherwise use the default models listed in Step 3 of the `interrogate` skill, at the effort listed there.
 
-That effort counts as a request for extra reasoning. For a model run through `opencode run`, pass the effort as `--variant <effort>`. If the model doesn't offer that variant (`opencode models <provider> --verbose`), use its highest one and say so.
+That effort counts as a request for extra reasoning. For a model run through `opencode run`, append the effort to the model as a variant, such as `opencode-go/grok-4.7#xhigh`. If OpenCode answers `Variant unavailable`, step down one level at a time (`high`, then `medium`) and say so.
 
 Running every model on every area costs too much at this scale. Assign reviewers this way:
 

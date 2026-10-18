@@ -43,7 +43,8 @@ dynamic workflows.
   - `grok 4.7` on Go -> `opencode-go/grok-4.7`
   - `grok 4.7` on Zen -> `opencode/grok-4.7`
   - OpenCode Go has no Opus/Claude model
-  - reasoning effort -> `--variant <level>`; valid levels are model-specific
+  - reasoning effort -> append `#<level>` to the model, e.g.
+    `opencode-go/grok-4.7#xhigh`; valid levels are model-specific
   - show reasoning blocks -> `--thinking`
 - Claude Code CLI
   - `opus 5.5` -> `claude-opus-5-5`
@@ -178,11 +179,14 @@ Interactive with the chosen model:
 opencode -m <chosen-model>
 ```
 
-If the user explicitly asks for OpenCode reasoning effort, the flag is:
+If the user explicitly asks for OpenCode reasoning effort, append the variant
+to the model name:
 
 ```bash
---variant <level>
+opencode run -m opencode-go/grok-4.7#xhigh "<prompt>"
 ```
+
+An unknown variant fails with `Variant unavailable for <model>: <level>`.
 
 If the user explicitly asks to see reasoning blocks, add:
 
@@ -194,14 +198,14 @@ OpenCode model names are `provider/model`: `opencode/...` uses Zen,
 `opencode-go/...` uses Go, and `github-copilot/...` uses Copilot. Resolve the
 provider as described in "Per-machine provider" above; never guess which
 subscription is current.
-If a requested model fails or appears stale, discover live IDs and variants
-with:
+If a requested model fails or appears stale, list live IDs, and filter by
+provider prefix:
 
 ```bash
-opencode models opencode --verbose
-opencode models opencode-go --verbose
-opencode models github-copilot --verbose
+opencode models | grep '^opencode-go/'
 ```
+
+The list does not show variants.
 
 Do not rediscover models on every run; use this only after a model-related
 failure or when the user requests a model not mapped above.
@@ -249,7 +253,7 @@ claude --model claude-opus-5-5 --effort xhigh
   its default read-only mode for analysis and review.
 - Use `codex review` for review-only tasks when the user asks Codex to review
   repository changes.
-- Do not guess OpenCode `--variant` values unless the user explicitly asked for
+- Do not guess OpenCode `#<variant>` values unless the user explicitly asked for
   extra reasoning.
 - If the user explicitly asks for Claude `max` effort, use `--effort max`
   instead of `xhigh`.
