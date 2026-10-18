@@ -40,6 +40,8 @@ dynamic workflows.
   - `kimi k3` on Go -> `opencode-go/kimi-k3`
   - `opus 5.5` on Zen -> `opencode/claude-opus-5-5`
   - `glm 5.3 fast` or `glm 5.3 flash` on Go -> `opencode-go/glm-5.3-flash`
+  - `grok 4.7` on Go -> `opencode-go/grok-4.7`
+  - `grok 4.7` on Zen -> `opencode/grok-4.7`
   - OpenCode Go has no Opus/Claude model
   - reasoning effort -> `--variant <level>`; valid levels are model-specific
   - show reasoning blocks -> `--thinking`
@@ -147,8 +149,9 @@ Candidates per provider. Treat them as peers, not as a fixed default. Pick the
 one that best fits the task and its expected speed and depth:
 
 - `opencode` (Zen): `opencode/kimi-k3`, `opencode/gemini-3.8-flash`,
-  `opencode/claude-opus-5-5`
-- `opencode-go` (Go): `opencode-go/glm-5.3-flash`, `opencode-go/kimi-k3`
+  `opencode/claude-opus-5-5`, `opencode/grok-4.7`
+- `opencode-go` (Go): `opencode-go/glm-5.3-flash`, `opencode-go/kimi-k3`,
+  `opencode-go/grok-4.7`
 - `github-copilot`: `github-copilot/claude-opus-5.5`,
   `github-copilot/gpt-6.1-sol`, `github-copilot/kimi-k3`,
   `github-copilot/gemini-3.8-flash`
