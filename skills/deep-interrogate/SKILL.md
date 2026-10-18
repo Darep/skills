@@ -57,9 +57,13 @@ Launch all reviewers concurrently. If the host caps concurrency, run them in wav
 
 Wait for every reviewer to finish before Step 5, and do not end your turn while any is still running. In a headless run such as `claude -p` or `codex exec`, ending the turn ends the process, and reviewers still running are lost.
 
+Do not put a time limit on reviewers. A long experiment can be what confirms a finding. If the host or a tool forces a limit, set it as high as allowed and note it in Coverage.
+
 ## Step 5, Collect
 
 Every area and every concern needs a result. Drop a result that ignores its brief or the output format, and retry a reviewer whose run fails. Retry once, with the same brief and the same model. After a second miss, record a gap. A gap is not a clean result. Do not report an area as clean because its reviewer never returned.
+
+When a reviewer times out, read its partial output before retrying. Evidence it already produced, such as a reproduced failure, counts as findings and goes to Step 6 like any other. If the retry also times out, report the brief as `partial: timed out` with what it produced, not as a gap. Only a brief whose runs produced nothing usable is a gap.
 
 Compare each area reviewer's `Read` list with the area's core files. If the reviewer skipped most core files, retry once. If any core files are still unread after the last run, report the area as partial and list them.
 
@@ -99,7 +103,7 @@ Put every finding in one of four buckets, with the models that raised it and a o
 | Area or concern | Paths | Model(s) | Result |
 |-----------------|-------|----------|--------|
 
-Paths for a concern are the boundaries it traced. Result is `N findings`, `no findings`, `partial: [unread files]`, or `GAP: [reason]`. Mark high-risk areas that ran on a single model. List excluded paths below the table.
+Paths for a concern are the boundaries it traced. Result is `N findings`, `no findings`, `partial: [unread files]`, `partial: timed out`, or `GAP: [reason]`. Note any time limit the host forced on reviewers. Mark high-risk areas that ran on a single model. List excluded paths below the table.
 
 ### Act on
 [Each: description, location, which models and briefs raised it, why it matters.]
