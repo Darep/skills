@@ -87,7 +87,6 @@ Read `lead-judgment.md` from interrogate's `references/` directory and apply it,
 
 - Reviewers here read existing code in full, not a diff. Do not dismiss a finding because the author didn't touch the code or because the reviewer could not see the call chain.
 - A pattern repeated across the codebase is a finding, not missing context. When areas share the same flaw, report it once as a systemic issue.
-- Ignore any limit it sets on the length of Act on, and use the one below.
 
 Put every finding in one of four buckets, with the models that raised it and a one-line rationale:
 
