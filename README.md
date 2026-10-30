@@ -11,16 +11,9 @@ These are the LLM skills that I use.
 
 ## Community Skills
 
-### [Inside Macintosh](https://github.com/tomdale/inside-mac) by Tom Dale (MIT)
+### [Inside Macintosh](https://github.com/tomdale/inside-mac/tree/b93b184337eae786e0a6008f6307685eb80fff92) by Tom Dale (MIT)
 
-- [imac-style](skills/imac-style/SKILL.md) - Router for the Inside Macintosh documentation skill set.
-- [imac-api-reference](skills/imac-api-reference/SKILL.md) - Write complete API, SDK, CLI, and config reference entries in the Inside Macintosh style.
-- [imac-concept-explainer](skills/imac-concept-explainer/SKILL.md) - Write conceptual "About X" docs that build a mental model before the API calls.
-- [imac-doc-architecture](skills/imac-doc-architecture/SKILL.md) - Plan or restructure documentation sets into concepts, tasks, and reference.
-- [imac-pdf-book](skills/imac-pdf-book/SKILL.md) - Render Markdown docs into a print-quality PDF book in the Inside Macintosh visual style.
-- [imac-review](skills/imac-review/SKILL.md) - Audit developer documentation against the modernized Inside Macintosh style.
-- [imac-task-guides](skills/imac-task-guides/SKILL.md) - Write "Using X" how-to guides, tutorials, and quickstarts with progressive code.
-- [imac-voice-and-tone](skills/imac-voice-and-tone/SKILL.md) - Rewrite developer docs in a precise, practical Inside Macintosh voice.
+- [inside-mac](skills/inside-mac/SKILL.md) - Plan, write, review, and render developer documentation in the Inside Macintosh style, including a print-quality PDF book.
 
 ### [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (MIT)
 
