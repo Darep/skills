@@ -36,4 +36,4 @@ After the sections, attach videos or screenshots when they prove a claim. Full S
 
 **Babysit.** A babysit watches CI and review comments and pushes fixes until the PR is ready to merge. Opening a PR does not start a babysit. Post the URL and keep building. Finish the phase or stack first. Run a separate babysit pass only when the user asks for one after the whole stack exists. A babysit for each new PR stalls the build and spends checks on commits later waves restart. Push back when feedback drifts from intent.
 
-A subagent that opens a PR runs `interrogate` and `deslop`, and posts the URL. It returns to the parent without babysitting, unless the task explicitly assigns it the babysit loop.
+A subagent that opens a PR runs `deslop` and posts the URL. It returns to the parent without babysitting, unless the task explicitly assigns it the babysit loop.
