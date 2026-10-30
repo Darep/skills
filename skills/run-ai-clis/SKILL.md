@@ -38,7 +38,10 @@ dynamic workflows.
   - `opus 5.5` on Copilot -> `github-copilot/claude-opus-5.5`
   - `kimi k3` on Zen -> `opencode/kimi-k3`
   - `kimi k3` on Go -> `opencode-go/kimi-k3`
+  - `kimi k3.1 pro` on Go -> `opencode-go/kimi-k3.1-pro` (not on Zen)
   - `opus 5.5` on Zen -> `opencode/claude-opus-5-5`
+  - `fable 5.1` on Zen -> `opencode/claude-fable-5-1`
+  - `gpt 6.1 sol` on Zen -> `opencode/gpt-6.1-sol`
   - `glm 5.3 fast` or `glm 5.3 flash` on Go -> `opencode-go/glm-5.3-flash`
   - `grok 4.7` on Go -> `opencode-go/grok-4.7`
   - `grok 4.7` on Zen -> `opencode/grok-4.7`
@@ -47,6 +50,8 @@ dynamic workflows.
   - show reasoning blocks -> `--thinking`
 - Claude Code CLI
   - `opus 5.5` -> `claude-opus-5-5`
+  - `fable 5.1` -> `claude-fable-5-1`; use only when the user names Fable,
+    because it costs about 2.5x Opus 5.5
   - plain `opus` can stay `opus` if the user did not pin a version
   - if user mentions `ultracode`, preserve the literal word
     `ultracode` in the prompt when practical; Claude uses it as a
@@ -154,9 +159,9 @@ Candidates per provider. Treat them as peers, not as a fixed default. Pick the
 one that best fits the task and its expected speed and depth:
 
 - `opencode` (Zen): `opencode/kimi-k3`, `opencode/gemini-3.8-flash`,
-  `opencode/claude-opus-5-5`, `opencode/grok-4.7`
+  `opencode/claude-opus-5-5`, `opencode/grok-4.7`, `opencode/gpt-6.1-sol`
 - `opencode-go` (Go): `opencode-go/glm-5.3-flash`, `opencode-go/kimi-k3`,
-  `opencode-go/grok-4.7`
+  `opencode-go/kimi-k3.1-pro`, `opencode-go/grok-4.7`
 - `github-copilot`: `github-copilot/claude-opus-5.5`,
   `github-copilot/gpt-6.1-sol`, `github-copilot/kimi-k3`,
   `github-copilot/gemini-3.8-flash`
