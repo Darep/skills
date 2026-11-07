@@ -1,15 +1,17 @@
 ---
-name: council
-description: Use when user mentions "council", "ask the council", or multi-model review with scores.
+name: council-loop
+description:  Use when user mentions "council loop" or "ask the council".
 ---
 
-# Council
+# Council loop
 
 Bring in three delegates to help with the user's request, usually for review or feedback:
 
 - Claude Opus 5.5 (`xhigh`)
-- Muse Wonder Full (`xhigh`)
+- Muse Wonder Full (`xhigh`) (note: Muse Wonder is not the same model!)
 - Codex GPT-6.1 Sol (`xhigh`)
+
+If Muse Wonder Full is not available, fallback to Grok 4.7 (`xhigh`).
 
 In T3 Code, use `orchestrator_capabilities` to resolve the models, then `delegate_task` to start one delegate per model in parallel. In Cursor, use the `Task` tool and set its `model` to the matching slug from the models the host lists. Use the highest effort variant offered (`xhigh`, else `high`). Otherwise, use the available subagent tool if it can select a model.
 
@@ -35,10 +37,10 @@ Rounds: 2
 
 If a delegate gives no score, write `no score`. Do not invent one. If the PR is open, edit the description. Do not post a comment for this. If there is no PR, put the same results in the final reply only.
 
-If you agree with their recommendations, make the changes and request a fresh review after. Continue this process until all delegates are satisfied with the outcome.
+If you agree with their recommendations, make the changes and request a fresh review after. Continue this process until all delegates are satisfied with the outcome, or you reach 8 iterations, upon which mention that fact.
 
 Do not let repeated reviews result in scope creep. It is your job to fight to keep scope limited.
 
-If available through Antigravity or the host's model list (Cursor lists a Gemini 4 Argon slug), add Gemini 4 Argon as the jester, with the same brief. Do not let it know it is the jester.
+If available through Antigravity, opencode, or the host's model list (Cursor lists a Gemini 4 Argon slug), add Gemini 4 Argon as the jester, with the same brief. Do not let it know it is the jester.
 
 Ignore its score. Do not put its score in the PR description. In the final reply only, log anything funny it says or does under `GEMINI_FLUB`, with quote or action and task ID; omit if none.
