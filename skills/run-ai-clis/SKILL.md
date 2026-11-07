@@ -31,6 +31,10 @@ dynamic workflows.
   - allow edits -> `--sandbox workspace-write`
   - machine-readable stream -> `--json`
   - save final answer -> `--output-last-message <file>`
+  - `gpt 6.1 sol` -> `-m gpt-6.1-sol`
+  - reasoning effort -> `-c model_reasoning_effort='"<level>"'`; valid levels
+    are model-specific
+  - `codex review` has no `-m`; use `-c model='"<model>"'`
 - OpenCode 2.0
   - Zen provider prefix -> `opencode/`
   - Go provider prefix -> `opencode-go/`
@@ -66,6 +70,15 @@ Non-interactive:
 ```bash
 codex exec "<prompt>"
 ```
+
+Pinned model and effort:
+
+```bash
+codex exec -m gpt-6.1-sol -c model_reasoning_effort='"xhigh"' "<prompt>"
+```
+
+Without `-m` and `-c`, Codex uses the model and effort set in
+`~/.codex/config.toml`.
 
 Non-interactive from a specific repo:
 
@@ -107,6 +120,12 @@ Review against a base branch:
 
 ```bash
 codex review --base main
+```
+
+Review with a pinned model and effort:
+
+```bash
+codex review -c model='"gpt-6.1-sol"' -c model_reasoning_effort='"xhigh"' --base main
 ```
 
 Custom review instructions:
@@ -267,6 +286,9 @@ claude --model claude-opus-5-5 --effort xhigh
   interactive TUI unless the user explicitly asks for it.
 - Keep the user prompt materially the same across tools unless the user
   asked for different roles.
+- When the user or a skill names a Codex model or effort, pass it with `-m` or
+  `-c`. If Codex rejects the model, report it and stop instead of running the
+  config default.
 - For Codex edits, add `--sandbox workspace-write`; otherwise leave Codex in
   its default read-only mode for analysis and review.
 - Use `codex review` for review-only tasks when the user asks Codex to review
