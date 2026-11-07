@@ -14,3 +14,23 @@ Adaptations, and why:
 - **`opening-a-pr` is a skill** made from pstack's playbook of the same name, because we don't ship the playbook.
 - **No references to skills we don't ship** (such as `why`). Inline what a skill needs, so nothing points at a missing skill.
 - **The deviations listed in `README.md`**, for the reasons given there.
+
+## Installing
+
+Symlink each skill into `~/.agents/skills`. The links point at this repo, so pulling updates the installed skills. Codex, OpenCode, and Gemini CLI read that directory.
+
+Claude Code and Antigravity don't. If the user runs either, also link into its directory:
+
+- **Claude Code:** `~/.claude/skills`
+- **Antigravity:** `~/.gemini/config/skills`
+
+Don't link into an agent's own directory, such as `~/.codex/skills`, if the agent reads `~/.agents/skills`. It would load each skill twice.
+
+Run this from the repo root after each pull. It links new skills and removes links to deleted ones. Set `dir` to each install directory in turn:
+
+```sh
+dir=~/.agents/skills
+mkdir -p "$dir"
+for skill in "$PWD"/skills/*; do ln -sfn "$skill" "$dir"/; done
+for link in "$dir"/*; do [ -e "$link" ] || rm "$link"; done
+```
