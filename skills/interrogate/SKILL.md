@@ -28,7 +28,7 @@ Launch all reviewers concurrently. If the user names reviewer models, use one re
 | Subagent | Default model | Effort |
 |----------|---------------|--------|
 | Reviewer A | Claude Opus 5.5 | xhigh |
-| Reviewer B | Grok 4.7 | xhigh |
+| Reviewer B | GPT 6.1 Sol | high |
 
 Each reviewer must run on its own model, because the signal comes from model diversity. Spawn a reviewer with the host's subagent tool when that tool can select its model. Otherwise run it through the matching local CLI with the commands and model IDs from the `run-ai-clis` skill: `claude` for Claude models, `codex exec` for GPT models, and `opencode run` for other families. Keep every reviewer read-only.
 
