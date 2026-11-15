@@ -10,6 +10,7 @@ These are the LLM skills that I use.
 - [macos-reminders](skills/macos-reminders/SKILL.md) - Create reminders in the macOS Reminders app at a given date and time.
 - [nitpickle](skills/nitpickle/SKILL.md) - Spawn a subagent for a thorough final quality review.
 - [run-ai-clis](skills/run-ai-clis/SKILL.md) - Teach agent to call Codex, OpenCode, and Claude Code so the LLM doesn't resort to guessing or wasting time figuring it out.
+- [workday](skills/workday/SKILL.md) - Track tasks as markdown files in `~/work/workday`: start, update and finish tasks, standups, and syncing.
 
 ## Community Skills
 
