@@ -22,13 +22,13 @@ This is a report. Do not edit code unless the user asks.
 1. **Resolve the change.** For a PR use `gh pr view <n>` and `gh pr diff <n>`; for a GitLab MR use `glab mr view <n>` and `glab mr diff <n>`. Resolve its head and base revisions from the metadata and fetch them if needed. For a branch, use the requested branch as `<head>`; only use `HEAD` when no target was given. Determine `<base>` from the branch context or repository default, stating any assumption. Record both commit IDs and use `git diff <base>...<head>`. Read the description to learn what the change is meant to do. Read production code and tests from that same head, for example with `git show <head>:<path>`. Run tests only in a clean checkout of that revision; if unavailable, report a static audit and say execution was not verified. Preserve existing local work.
 2. **Find the tests in scope.** Include tests added or changed in the diff, and existing tests that cover the changed functionality. To find them, search for the changed functions, routes, classes, and tables. Read the production code they cover, not just the diff.
 3. **Learn what the real stack is.** Look at the test setup: fixtures, factories, test database, docker compose, testcontainers, test server, CI config. This tells you what tests could use. A test that mocks the database is a finding only if a real one is available or easy to add; say which.
-4. **Audit each test.** Apply the checks below. For each suspect test, decide whether it would still pass if the code under test were broken.
+4. **Audit each test.** Apply the checks below. For each suspect test, decide whether it would still pass if the code under test were broken. Catching the mutation of the changed line is not enough on its own: also ask whether the test checks what the unit produces, or only the one detail the change touched.
 5. **Prove the worst findings when practical.** In the clean target checkout:
    - Run the selected test unchanged first and confirm it executes and passes, rather than being skipped or selecting zero tests.
    - Break a behavior the test claims to cover, for example by inverting a condition, returning early, or dropping a write. Rebuild generated output and bypass caches as needed so the test executes the mutated code. If you cannot establish that, mark the check inconclusive.
    - Run the same test and report the exact mutation it missed. A surviving mutation demonstrates a specific coverage gap; it does not prove the test checks nothing or that the whole feature is untested. A failing baseline is also inconclusive.
    - Restore the edited file even if the run fails, using `git restore --source=<head> -- <file>`, and rebuild any affected output. Verify no mutation remains.
-6. **List what is missing.** Compare the change's behavior to the tests: new branches, error paths, validation, permissions, edge cases, and migrations with no test.
+6. **List what is missing.** Compare the change's behavior to the tests: new branches, error paths, validation, permissions, edge cases, and migrations with no test. If the change touches a unit whose main output has no test, such as the request it sends or the record it writes, say so even when the changed line itself is covered.
 7. **Report** in the format below.
 
 ## Checks
@@ -47,7 +47,8 @@ This is a report. Do not edit code unless the user asks.
 **Asserts too little**
 - Has no assertion, or asserts only that the code does not throw or returns something truthy.
 - Checks the response status but not the body or the persisted state.
-- Relies on a large snapshot that nobody would review when it changes.
+- Checks one field of an output the code builds in full, such as a request body, payload, or rendered output, when the test could compare the whole thing. This is common in a regression test written around a fix instead of the unit. Fix it by asserting the full output with the fixed field as one value among the rest. Rate it Medium.
+- Relies on a large generated snapshot file that nobody would review when it changes. An expected value written out in the test is not a snapshot, even when it is long.
 - Computes expected values by re-implementing the production logic in the test.
 
 **Tests the wrong thing**
