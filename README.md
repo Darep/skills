@@ -18,8 +18,6 @@ These are the LLM skills that I use.
 
 - [frontend-design](skills/frontend-design/SKILL.md) - Create distinctive frontend designs with intentional typography, color, layout, and copy.
 
-Imported verbatim, including its license.
-
 ### [Inside Macintosh](https://github.com/tomdale/inside-mac/tree/b93b184337eae786e0a6008f6307685eb80fff92) by Tom Dale (MIT)
 
 - [inside-mac](skills/inside-mac/SKILL.md) - Plan, write, review, and render developer documentation in the Inside Macintosh style, including a print-quality PDF book.
