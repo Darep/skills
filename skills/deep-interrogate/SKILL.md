@@ -33,7 +33,7 @@ Show the user the area table, the excluded paths, the concerns, and the planned 
 
 ## Step 3, Assign models
 
-Use the reviewer models the user names. Otherwise use the default models listed in Step 3 of the `interrogate` skill, at the effort listed there.
+Use the reviewer models the user names. Otherwise follow Step 3 of the `interrogate` skill to resolve the panel, including `local.md` beside that skill, and use the effort listed there.
 
 That effort counts as a request for extra reasoning. For a model run through `opencode run`, append the effort to the model as a variant, such as `opencode-go/grok-4.7#xhigh`. If OpenCode answers `Variant unavailable`, step down one level at a time (`high`, then `medium`) and say so.
 

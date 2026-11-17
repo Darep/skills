@@ -23,7 +23,7 @@ Before spawning reviewers, state the intent in one clear paragraph from the user
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers concurrently. If the user names reviewer models, use one reviewer per model, extending or shrinking the Reviewer A/B labels below to match. Otherwise use the table defaults.
+Launch all reviewers concurrently. Pick the panel in this order: models the user names, one reviewer each; otherwise the table in `local.md` in the same directory as this file, when that file exists; otherwise the table below. A missing `local.md` is normal. Extend or shrink the Reviewer A/B labels to match the panel. See `local.md.example` for the file's shape.
 
 | Subagent | Default model | Effort |
 |----------|---------------|--------|
@@ -34,7 +34,7 @@ Each reviewer must run on its own model, because the signal comes from model div
 
 If the host or CLI rejects a model, use the closest available model of the same family and say so. If no model of that family is available, use a family no other reviewer uses and say so. If only one model is available, do the review with that model and say so. Do not block the review on an unavailable model.
 
-Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each reviewer's effort for the job, starting from the table: raise it one step for the hardest or subtlest changes and lower it for routine ones. Change only the effort, never the model family, so the panel stays diverse.
+Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each reviewer's effort for the job, starting from the panel: raise it one step for the hardest or subtlest changes and lower it for routine ones. Change only the effort, never the model family, so the panel stays diverse.
 
 ## Step 4, Synthesize
 
