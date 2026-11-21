@@ -19,7 +19,8 @@ requires a decision that would change the agreed scope.
 ## Review loop
 
 A pr thread reviews its own change before it opens the PR, in up to three rounds, unless the
-instructions set another limit or exempt a kind of change. Each round:
+instructions set another limit or exempt a kind of change. If required review is unavailable,
+report the blocker. Each round:
 
 1. Run the `interrogate` skill on the branch's diff against the base branch. Use the brief's Task,
    Why, and Scope, including any decisions from planning, as the intent. From round 2 on, add the
@@ -31,9 +32,10 @@ instructions set another limit or exempt a kind of change. Each round:
    the scope, a matter of taste, already handled, or in conflict with the instructions or repo
    rules. Report real pre-existing problems outside the agreed scope as follow-ups. Apply any
    review standards the instructions give. Decline an Act on finding only with a concrete reason.
-3. No `fix` findings: the loop passes. Verify the final change against Done when, then open the
-   draft PR once verification passes.
-4. `fix` findings in round 1 or 2: fix them, commit, rerun the checks, and start the next round.
-5. `fix` findings in round 3: the approach needs rethinking, not another patch. Don't fix them
-   and don't open the PR. Push the branch, and report `Result: rethink needed` with the findings
-   still open, what the rounds' findings have in common, and what you'd reconsider.
+3. No `fix` findings: verify the final change against Done when. Open the draft PR if verification
+   passes. If it exposes an in-scope defect, handle it like a `fix` finding. Report any check you
+   cannot complete as a blocker.
+4. `fix` findings before the last round: fix them, commit, rerun the checks, and start the next
+   round.
+5. `fix` findings in the last round: stop the review loop and leave the draft unopened. Push the
+   branch and report `Result: rethink needed` with the open findings and what you'd reconsider.

@@ -95,7 +95,7 @@ In Send mode, from any thread in the project:
    `t3_thread_send` and `mode: "queue"`, and give the user the coordinator's link.
 4. If the project has no coordinator, offer to start one. On a yes, use `t3_thread_launch` in the
    project with the title `<project>: Coordinator` and the message `/coordinator`, followed by
-   the summary from step 2.
+   the summary from step 2. On a routine run, report the missing coordinator and stop.
 
 ## Overview
 
