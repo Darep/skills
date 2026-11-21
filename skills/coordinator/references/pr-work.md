@@ -1,0 +1,39 @@
+# PR work
+
+Follow these steps in the implementation worktree.
+
+## Plan before editing
+
+Start implementing when both the fix and its scope are clear. When the approach is uncertain
+or the change may alter behavior beyond the request, start with a read-only pass in the same
+pr thread. Trace the current behavior through its callers, and record the smallest viable
+fix, what it would change, what's out of scope, and how to verify it through the normal entry
+point.
+
+If a choice about existing behavior or scope is still unresolved, ask the user in the pr
+thread before editing. State the options and recommend one. Record the answer in the
+thread's Scope and update Done when to match. Proceed directly when planning leaves no
+scope decision for the user, or once the user answers. Ask again only if new evidence
+requires a decision that would change the agreed scope.
+
+## Review loop
+
+A pr thread reviews its own change before it opens the PR, in up to three rounds, unless the
+instructions set another limit or exempt a kind of change. Each round:
+
+1. Run the `interrogate` skill on the branch's diff against the base branch. Use the brief's Task,
+   Why, and Scope, including any decisions from planning, as the intent. From round 2 on, add the
+   earlier rounds' findings and what was done with each, and ask reviewers not to raise a
+   declined finding again unless they bring new evidence.
+2. Triage every Act on and Consider finding as `fix` or `decline`, with a one-line reason. Fix
+   real problems in this change's scope: correctness, security, data loss, broken contracts, and
+   maintainability that would block a real PR. Decline findings that are speculative, outside
+   the scope, a matter of taste, already handled, or in conflict with the instructions or repo
+   rules. Report real pre-existing problems outside the agreed scope as follow-ups. Apply any
+   review standards the instructions give. Decline an Act on finding only with a concrete reason.
+3. No `fix` findings: the loop passes. Verify the final change against Done when, then open the
+   draft PR once verification passes.
+4. `fix` findings in round 1 or 2: fix them, commit, rerun the checks, and start the next round.
+5. `fix` findings in round 3: the approach needs rethinking, not another patch. Don't fix them
+   and don't open the PR. Push the branch, and report `Result: rethink needed` with the findings
+   still open, what the rounds' findings have in common, and what you'd reconsider.

@@ -5,7 +5,7 @@ These are the LLM skills that I use.
 ## My Skills
 
 - [annotate-plan](skills/annotate-plan/SKILL.md) - Render plans as an annotatable local HTML page with paste-back prompts.
-- [coordinator](skills/coordinator/SKILL.md) - Run a T3 project: a coordinator thread, worker threads, memory, library, and routines.
+- [coordinator](skills/coordinator/SKILL.md) - Run a T3 project: a coordinator thread, worker threads, memory, library, and routines. PR threads review their work with `interrogate` before opening the PR.
 - [council](skills/council/SKILL.md) - Three delegates on different models review the work and score it each round until satisfied.
 - [deep-interrogate](skills/deep-interrogate/SKILL.md) - Adversarial multi-model review of a whole codebase, split into areas and cross-cutting concerns. Requires `interrogate`.
 - [macos-reminders](skills/macos-reminders/SKILL.md) - Create reminders in the macOS Reminders app at a given date and time.
