@@ -77,9 +77,10 @@ with `freshContext: true` and the message `/coordinator`.
 
 ## Finding the coordinator
 
-1. Read `Coordinator thread` from `~/work/coordinator/<project>/MEMORY.md`, and check with
-   `t3_thread_read` that the thread exists and isn't archived.
-2. If memory has no id, or that thread is gone, run `t3_thread_list` with the project's id and
+1. Check memory ownership as described in [SKILL.md](../SKILL.md). Read `Coordinator thread`
+   from the matching memory. Use `t3_thread_read` to verify its `projectId` and archive state.
+2. If the stored thread is missing, archived, or in another project, use `t3_thread_list` with
+   the project's id and
    `titleContains: "<project>: Coordinator"`. Only count threads titled exactly
    `<project>: Coordinator` with no `parentThreadId`.
 3. More than one match: ask the user which is the coordinator.

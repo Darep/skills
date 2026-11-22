@@ -52,6 +52,10 @@ the instructions below. When briefing a PR worker, give it the absolute path to
 never get committed, and they can hold live numbers and conclusions that the tracked instructions
 shouldn't.
 
+Before using an existing memory folder in this project, check the repo path in its
+`Coordinator memory for` header against the registered workspace root. If the header is missing
+or names a different checkout, report the conflict and leave that folder alone.
+
 **Instructions** are what every thread starts from, alongside the repo rules. Keep them under
 ~16,000 characters and cover: what the project is for, the repo and base branch, how threads name
 branches and PRs, how a thread verifies its work, review standards for the review loop, what to
@@ -122,6 +126,8 @@ thread report, summarize blockers or proposals and wait for the user's next mess
 - `title`: `<area>: <what>`.
 - `role`: `research` for decision and doc threads, `implementation` for pr threads.
 - `isolation: "worktree"` for pr threads and anything else that edits repo files.
+- For a new pr thread, include its intended base ref. The worker checks for unrelated commits
+  from the parent checkout before editing and reports a blocker if the base is wrong.
 - Async. Record the thread in memory as `running`, then end your turn. T3 starts a new
   coordinator run with the thread's report when it finishes; don't wait or poll.
 
@@ -180,8 +186,9 @@ follow-up pr work.
 
 On each user message, locate this project's tracked workers marked `running` in memory with
 `t3_thread_list` (`projectId`, `includeSubagents: true`). Match by recorded link and page as
-needed. Read each matched worker with `t3_thread_read` (`threadId`, `limit: 1`). If the returned
-`thread.pendingRequestCount` is above zero, mark it `needs you` and give the user its link.
+needed. Call `t3_pending_request` with `action: "list"` and each matched worker's `threadId`.
+If `requestIds` contains a question, mark the worker `needs you` and give the user its link.
+This lookup leaves completion reports for T3 to deliver.
 
 ## On each user message
 
