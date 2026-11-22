@@ -33,10 +33,16 @@ includes them. Open the PR from the commit that passed review and verification. 
    the scope, a matter of taste, already handled, or in conflict with the instructions or repo
    rules. Report real pre-existing problems outside the agreed scope as follow-ups. Apply any
    review standards the instructions give. Decline an Act on finding only with a concrete reason.
-3. No `fix` findings: verify the reviewed commit against Done when. Open the draft PR if verification
-   passes. If it exposes an in-scope defect, handle it like a `fix` finding. Report any check you
-   cannot complete as a blocker.
+3. No `fix` findings: verify the reviewed commit against Done when. Open the draft PR (see "Opening
+   the PR") if verification passes. If it exposes an in-scope defect, handle it like a `fix`
+   finding. Report any check you cannot complete as a blocker.
 4. `fix` findings before the last round: fix them, commit, rerun the checks, and start the next
    round.
 5. `fix` findings in the last round: stop the review loop and leave the draft unopened. Push the
    branch and report `Result: rethink needed` with the open findings and what you'd reconsider.
+
+## Opening the PR
+
+Follow the `opening-a-pr` skill for the forge (`gh` or `glab`), commits, title, and body, with
+one exception: coordinator PRs open as drafts. The user marks them ready. The review loop already
+covers its `interrogate` step.

@@ -59,8 +59,11 @@ or names a different checkout, report the conflict and leave that folder alone.
 **Instructions** are what every thread starts from, alongside the repo rules. Keep them under
 ~16,000 characters and cover: what the project is for, the repo and base branch, how threads name
 branches and PRs, how a thread verifies its work, review standards for the review loop, what to
-do when something is missing, and what
-needs the user's go-ahead. Repo-wide coding rules stay in `AGENTS.md`.
+do when something is missing, and what needs the user's go-ahead. Repo-wide coding rules stay in
+`AGENTS.md`.
+
+"PR" in this skill means a GitHub pull request or a GitLab merge request. Use `gh` or `glab`,
+whichever matches the repo's remote.
 
 ## Memory
 
@@ -75,7 +78,12 @@ Use the [memory template](references/project-operations.md#memory-template) when
 - **Area**: a short name for the part of the project the thread works in (`billing`, `runway`,
   `ci`). Routing uses it.
 - **Produces**: `decision`, `doc`, or `pr`.
-- **Status**: `proposed`, `running`, `needs you`, `done`, `parked`, or for `you` rows `todo`.
+- **Priority**: `high`, `mid`, or `low`. The coordinator proposes it and the user can change it.
+- **Status**: `proposed`, `queued` (approved, waiting for a free slot), `running`, `needs you`,
+  `done`, `parked`, or for `you` rows `todo`.
+- **Next**: one concrete action, or `waiting on <who/what>`. On a `needs you` row, it's what the
+  user has to do. Empty once the row is `done`.
+- **Result**: one line. On a pr row, include the PR URL.
 - Use `you` rows for actions and Open questions for unknowns.
 - If the `workday` skill is installed, offer once per `you` row to track it there too.
 
@@ -106,13 +114,14 @@ For each piece of work:
 3. **Otherwise**: start a new thread with `delegate_task`.
 
 Several unrelated pieces become separate threads. Run at most two at a time until a project's
-threads have reported back well a few times; after that, at most four.
+threads have reported back well a few times; after that, at most four. Mark approved threads
+beyond the limit `queued`, and when a slot frees up, start the highest-priority queued thread.
 
 ### Proposing threads
 
 Propose threads and wait for the user's go before starting them, unless the user said to just run
-it. A proposal names the title, area, what it produces, the task, and how the thread will know it's
-done.
+it. A proposal names the title, area, priority, what it produces, the task, and how the thread will
+know it's done. List several proposals highest priority first.
 
 Make proposals clickable when the host has a question tool (`AskUserQuestion` in Claude Code):
 one question per proposal with `Run it`, `Change it`, and `Skip`, or one multi-select question
@@ -217,3 +226,4 @@ come from the user in this thread. Record the source in Threads, and read it wit
   starting a coordinator. Top-level threads need the user's agreement in Send mode.
   Don't change project settings.
 - One coordinator per project.
+- Don't use the workday skill.

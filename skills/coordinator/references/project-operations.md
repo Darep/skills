@@ -40,7 +40,7 @@ Coordinator thread: <thread id> <thread link>
 - <question>: <what would resolve it>
 
 ## Threads
-| Who | Area | Title | Produces | Status | Result | Link |
+| Who | Area | Title | Produces | Priority | Status | Next | Result | Link |
 
 ## Library
 - library/<file>: <one line on what it is>, from <thread link>
@@ -104,8 +104,8 @@ A read-only summary across projects, from any thread. It writes nothing.
 
 1. Read every `~/work/coordinator/*/MEMORY.md`.
 2. For each project, at most four lines: the first sentence of the Summary and the coordinator's
-   link; threads `running` or `needs you`; `you` rows that are `todo`; Next checks due within 7
-   days or overdue.
+   link; threads `running` or `needs you`, with the Next of each `needs you` row; `you` rows that
+   are `todo`, high priority first; Next checks due within 7 days or overdue.
 3. Put projects that need the user first (`needs you`, an overdue check, or a `you` row older
    than a week), then projects with running threads, then the rest, one line each.
 4. Flag memory updated over 30 days ago as stale, and a missing or archived coordinator thread as
